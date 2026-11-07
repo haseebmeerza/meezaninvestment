@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Meezan Investment Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef2f7;--card:#fff;--ink:#12233d;--mut:#5d6b82;--brd:#c5d0e0;--navy:#0f2a52;--gold:#c9a227;--up:#0a8f5b;--dn:#c8352f;--side:#0f2a52}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#0b1424;--card:#13203a;--ink:#e8eef9;--mut:#9fb0cb;--brd:#2c3d5e;--navy:#1b3a6e;--side:#0a1830}}
+:root[data-theme=dark]{--bg:#0b1424;--card:#13203a;--ink:#e8eef9;--mut:#9fb0cb;--brd:#2c3d5e;--navy:#1b3a6e;--side:#0a1830}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;font:15px/1.45 "Segoe UI",Calibri,Arial,sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select{font:inherit}
+.btn{border:1.5px solid var(--navy);background:var(--navy);color:#fff;padding:9px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+.btn.gold{background:var(--gold);border-color:var(--gold);color:#1a1405}.btn.ghost{background:transparent;color:var(--ink);border-color:var(--brd)}
+.btn:hover{filter:brightness(1.1)}
+input,select{padding:9px 10px;border:1.5px solid var(--brd);border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+#home{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#0f2a52,#1d4a86 60%,#c9a227)}
+.login{background:var(--card);border:2px solid var(--gold);border-radius:16px;max-width:760px;width:100%;display:grid;grid-template-columns:1.1fr 1fr;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.login>div{padding:26px}.login .info{background:var(--navy);color:#fff}.info h2{margin:0 0 6px;color:var(--gold)}.info li{margin:6px 0;font-size:14px}
+.logo{width:54px;height:54px;border-radius:12px;background:var(--gold);color:#1a1405;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:22px;margin-bottom:10px}
+@media(max-width:700px){.login{grid-template-columns:1fr}}
+#app{display:none;min-height:100vh}
+.banner{background:linear-gradient(90deg,#0f2a52,#1d4a86);color:#fff;border-bottom:3px solid var(--gold);padding:14px 20px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.banner .who{font-size:20px;font-weight:700}.banner .who span{color:var(--gold)}.banner .fund{font-size:14px;opacity:.9}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.layout{display:grid;grid-template-columns:210px 1fr;gap:14px;padding:14px;align-items:start}
+.menu{background:var(--side);border:2px solid var(--gold);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;position:sticky;top:10px}
+.menu button{text-align:left;background:rgba(255,255,255,.06);color:#fff;border:1.5px solid rgba(255,255,255,.25);padding:11px 12px;border-radius:9px;cursor:pointer;font-weight:600}
+.menu button.on,.menu button:hover{background:var(--gold);color:#1a1405;border-color:var(--gold)}
+.main{background:var(--card);border:2px solid var(--brd);border-radius:12px;padding:16px;min-height:60vh}
+.main h3{margin:0 0 12px;color:var(--navy)}@media(prefers-color-scheme:dark){.main h3{color:var(--gold)}}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:14px}
+.kpi{border:1.5px solid var(--brd);border-radius:10px;padding:12px;background:var(--bg);box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.kpi small{color:var(--mut);display:block}.kpi b{font-size:20px}
+.up{color:var(--up)}.dn{color:var(--dn)}
+.tw{overflow-x:auto;border:1.5px solid var(--brd);border-radius:10px;max-height:420px;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}th,td{border:1px solid var(--brd);padding:7px 9px;text-align:right;white-space:nowrap}
+th{background:var(--navy);color:#fff;position:sticky;top:0}td:first-child,th:first-child{text-align:left}
+.box{border:1.5px solid var(--brd);border-radius:10px;padding:12px;margin-bottom:14px}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;align-items:end}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-weight:700;border:1.5px solid}
+.fab{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:20;border-radius:99px;padding:14px 20px;box-shadow:0 8px 20px rgba(0,0,0,.35)}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:#0a8f5b;color:#fff;padding:10px 18px;border-radius:10px;display:none;z-index:30}
+svg text{fill:var(--mut);font-size:11px}
+.note{color:var(--mut);font-size:12.5px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.menu{flex-direction:row;flex-wrap:wrap;position:static}.menu button{flex:1 1 40%}}
+</style></head><body>
+
+<section id="home"><div class="login">
+ <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
+ <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
+ <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 1.0 · Data from the Excel “AMIF.200K-Daily Sheet”.</p></div>
+ <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Name only — no password.</p>
+ <label>Your name</label><input id="uname" placeholder="e.g. Maria" maxlength="30" style="margin:6px 0 10px">
+ <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
+ <p class="note" style="text-align:center;margin:12px 0 6px">Quick select</p>
+ <div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" onclick="login('Maria')">Maria</button><button class="btn ghost" style="flex:1" onclick="login('Maeda')">Maeda</button></div>
+ </div></div></section>
+
+<section id="app">
+ <div class="banner"><div><div class="who">Maria <span>&amp;</span> Maeda</div><div class="fund">Al Meezan Islamic Fund (MIF) · Investment Fund</div></div>
+ <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
+ <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
+ <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
+ <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
+</section><div id="toast"></div>
+
+<script>
+const BASE={invest:100000,charges:1955,tax:293.5,buyNAV:170.1922,names:['Maria','Maeda']};
+const SEED={"2026-06-17":170.1922,"2026-06-18":170.1922,"2026-06-19":170.1922,"2026-06-20":170.1922,"2026-06-21":170.1922,"2026-06-22":169.1158,"2026-06-23":168.9046,"2026-06-24":168.9046,"2026-06-25":168.9046,"2026-06-26":168.9046,"2026-06-27":168.9046,"2026-06-28":168.9046,"2026-06-29":168.6041,"2026-06-30":169.7,"2026-07-01":172.0482,"2026-07-02":172.6587,"2026-07-03":173.5081,"2026-07-04":173.5081,"2026-07-05":173.5081,"2026-07-06":175.3126,"2026-07-07":173.5889,"2026-07-08":169.023,"2026-07-09":168.8494,"2026-07-10":169.6963,"2026-07-11":169.6963,"2026-07-12":169.6963,"2026-07-13":167.1206,"2026-07-14":161.1499,"2026-07-15":162.6919,"2026-07-16":165.6168,"2026-07-17":163.0619};
+let rates={...SEED},plans=[],view='reports',detail=false,user='';
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const f=(n,d=2)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const sg=n=>(n>=0?'+':'')+f(n);const cl=n=>n>=0?'up':'dn';
+const netEach=BASE.invest-BASE.charges-BASE.tax, unitsEach=netEach/BASE.buyNAV;
+function toast(m,bad){const t=$('toast');t.textContent=m;t.style.background=bad?'#c8352f':'#0a8f5b';t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
+/* ---------- storage ---------- */
+// Google Apps Script web-app URL (linked to the Google Sheet). Empty = this-device mode only.
+const API_URL='https://script.google.com/macros/s/AKfycbzCf-lMnsb133pzun65jtYE27sGg5rbZIzZ0S8FLzUMyMA9DusWJQEnPQjYrB2NSOsvcA/exec';
+const addD=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
+const isFri=d=>new Date(d+'T00:00:00Z').getUTCDay()===5;
+function wkSet(o,d){if(isFri(d)){o[addD(d,1)]=o[d];o[addD(d,2)]=o[d]}}
+function fillWk(o){Object.keys(o).forEach(d=>{if(isFri(d))[1,2].forEach(k=>{const x=addD(d,k);if(o[x]===undefined)o[x]=o[d]})})}
+function lsGet(){try{return JSON.parse(localStorage.getItem('mif')||'null')}catch(e){return null}}
+function lsSet(o){try{localStorage.setItem('mif',JSON.stringify(o))}catch(e){}}
+function setSync(s){const e=$('sync');if(!e)return;e.textContent=!API_URL?'● This device only':s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
+async function api(body){const o=body?{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}:{};
+ const r=await fetch(API_URL+(body?'':(API_URL.includes('?')?'&':'?')+'t='+Date.now()),o);const j=await r.json();if(j.error)throw new Error(j.error);return j}
+function applyState(j){rates=j.rates;plans=(j.plans||[]).map(p=>({...p}))}
+async function load(){
+ if(API_URL){try{applyState(await api());lsSet({rates,plans});setSync('cloud');return true}catch(e){setSync('err');toast('Cannot reach Google Sheet – showing last saved copy',1)}}
+ const d=lsGet();if(d&&d.rates&&Object.keys(d.rates).length){rates=d.rates;plans=d.plans||[]}else{rates={...SEED};plans=[]}
+ fillWk(rates);setSync();return false}
+async function persist(body,localFn){
+ if(API_URL){try{applyState(await api(body));lsSet({rates,plans});setSync('cloud');return true}catch(e){setSync('err');toast('Not saved – Google Sheet unreachable ('+e.message+')',1);return false}}
+ localFn();fillWk(rates);lsSet({rates,plans});return true}
+(async()=>{fillWk(rates);await load();
+ try{const n=sessionStorage.getItem('mifu');if(n)enter(n)}catch(e){}
+ if(API_URL)setInterval(()=>{if(user&&view!=='rates'&&view!=='plans')load().then(()=>show(view,1))},60000)})();
+/* ---------- model ---------- */
+function series(){const ds=Object.keys(rates).sort();return ds.map((d,i)=>{const r=+rates[d];
+ let un=2*unitsEach;plans.filter(p=>p.status==='Executed'&&p.date<=d).forEach(p=>un+=p.units);
+ const inv=2*BASE.invest+plans.filter(p=>p.status==='Executed'&&p.date<=d).reduce((a,p)=>a+p.mAmt+p.dAmt,0);
+ const prev=i?+rates[ds[i-1]]:r;
+ let mU=unitsEach,dU=unitsEach,mI=BASE.invest,dI=BASE.invest;
+ plans.filter(p=>p.status==='Executed'&&p.date<=d).forEach(p=>{mU+=p.mUnits;dU+=p.dUnits;mI+=p.mAmt;dI+=p.dAmt});
+ const mv=mU*r,dv=dU*r;return{d,r,chg:i?(r-prev)/prev*100:0,mv,dv,tv:mv+dv,inv,pl:mv+dv-inv,gr:(mv+dv-inv)/inv*100,mpl:mv-mI,dpl:dv-dI,un}})}
+function last(){const s=series();return s[s.length-1]}
+/* ---------- login ---------- */
+function login(n){n=(n||$('uname').value).trim();if(!n){toast('Please enter your name',1);return}enter(n)}
+function enter(n){user=n;try{sessionStorage.setItem('mifu',n)}catch(e){}
+ $('home').style.display='none';$('app').style.display='block';$('hi').textContent='Signed in: '+n;buildMenu();show('reports')}
+function logout(){try{sessionStorage.removeItem('mifu')}catch(e){}$('app').style.display='none';$('home').style.display='flex'}
+const MENU=[['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['rates','🏦 Daily Rates']];
+function buildMenu(){$('menu').innerHTML=MENU.map(m=>`<button data-v="${m[0]}" onclick="show('${m[0]}')">${m[1]}</button>`).join('')}
+function show(v,keep){view=v;document.querySelectorAll('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+ $('out').innerHTML=({reports,status,forecast,trend,graphs,plans:plansV,rates:ratesV})[v]();if(!keep)window.scrollTo({top:0,behavior:'smooth'})}
+const kpi=(l,v,c='')=>`<div class="kpi"><small>${l}</small><b class="${c}">${v}</b></div>`;
+/* ---------- charts ---------- */
+function chart(sers,o={}){const W=720,H=260,P=44;const all=sers.flatMap(s=>s.v);let mn=Math.min(...all),mx=Math.max(...all);if(o.bars){mn=Math.min(mn,0);mx=Math.max(mx,0)}if(mn===mx){mn-=1;mx+=1}const pad=(mx-mn)*.08;mn-=pad;mx+=pad;
+ const n=sers[0].v.length,x=i=>P+(n<2?0:i*(W-P-12)/(n-1)),y=v=>H-24-(v-mn)/(mx-mn)*(H-40);
+ let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;g+=`<line x1="${P}" x2="${W-12}" y1="${y(v)}" y2="${y(v)}" stroke="var(--brd)"/><text x="${P-4}" y="${y(v)+4}" text-anchor="end">${f(v,o.d??1)}</text>`}
+ const lab=o.labels||[];[0,Math.floor(n/2),n-1].forEach(i=>{if(lab[i])g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle">${lab[i].slice(5)}</text>`});
+ let body='';sers.forEach(s=>{if(o.bars){const bw=Math.max(3,(W-P)/n-3);s.v.forEach((v,i)=>{const z=y(0),yy=y(v);body+=`<rect x="${x(i)-bw/2}" y="${Math.min(z,yy)}" width="${bw}" height="${Math.abs(z-yy)||1}" fill="${v>=0?'var(--up)':'var(--dn)'}"/>`})}
+ else body+=`<polyline fill="none" stroke="${s.c}" stroke-width="2.2" stroke-dasharray="${s.dash||''}" points="${s.v.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>`});
+ const lg=sers.filter(s=>s.n).map((s,i)=>`<text x="${P+8+i*120}" y="14" style="fill:${s.c}">● ${s.n}</text>`).join('');
+ return `<div class="box"><b>${o.t||''}</b><svg viewBox="0 0 ${W} ${H}" width="100%" role="img">${g}${body}${lg}</svg></div>`}
+/* ---------- views ---------- */
+function reports(){const s=series(),L=s[s.length-1],best=s.slice(1).reduce((a,b)=>b.chg>a.chg?b:a,s[1]),worst=s.slice(1).reduce((a,b)=>b.chg<a.chg?b:a,s[1]);
+ const hi=s.reduce((a,b)=>b.r>a.r?b:a);
+ let h=`<h3>Reports</h3><div class="box" style="border-color:var(--gold)"><b>Quick Summary</b> <span class="note">as of ${L.d}</span><div class="grid" style="margin-top:10px">
+ ${kpi('Latest NAV',f(L.r,4))}${kpi('Current Value (Rs)',f(L.tv))}${kpi('Total Invested (Rs)',f(L.inv))}${kpi('Total Gain / Loss',sg(L.pl),cl(L.pl))}${kpi('Growth',sg(L.gr)+'%',cl(L.gr))}
+ ${kpi('Maria Gain / Loss',sg(L.mpl),cl(L.mpl))}${kpi('Maeda Gain / Loss',sg(L.dpl),cl(L.dpl))}${kpi('Best day',best.d.slice(5)+' ('+sg(best.chg)+'%)','up')}${kpi('Worst day',worst.d.slice(5)+' ('+sg(worst.chg)+'%)','dn')}${kpi('Peak NAV',f(hi.r,4)+' · '+hi.d.slice(5))}</div>
+ <p class="note" style="margin:0">Investment: Rs 100,000 each · Upfront charges 1,955 + tax 293.50 each · Buy NAV ${f(BASE.buyNAV,4)} · Units each ${f(unitsEach,4)}</p></div>
+ <button class="btn" onclick="detail=!detail;show('reports')">${detail?'Hide':'View'} detailed report</button>`;
+ if(detail)h+=`<div class="tw" style="margin-top:12px"><table><tr><th>Date</th><th>NAV</th><th>Chg %</th><th>Maria Value</th><th>Maeda Value</th><th>Total Value</th><th>Gain/Loss</th><th>Growth %</th></tr>${[...s].reverse().map(r=>`<tr><td>${r.d}</td><td>${f(r.r,4)}</td><td class="${cl(r.chg)}">${sg(r.chg)}</td><td>${f(r.mv)}</td><td>${f(r.dv)}</td><td>${f(r.tv)}</td><td class="${cl(r.pl)}">${sg(r.pl)}</td><td class="${cl(r.gr)}">${sg(r.gr)}</td></tr>`).join('')}</table></div>`;
+ return h}
+function status(){const L=last(),be=L.inv/L.un,gap=(be-L.r)/L.r*100,ok=L.pl>=0;
+ const card=(n,v,p,inv)=>`<div class="kpi"><small>${n}</small><b>${f(v)}</b><div class="${cl(p)}">${sg(p)} (${sg(p/inv*100)}%)</div></div>`;
+ const mI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.mAmt,0),dI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.dAmt,0);
+ return `<h3>Status</h3><div class="box"><span class="badge ${ok?'up':'dn'}">${ok?'IN PROFIT':'IN LOSS'}</span> &nbsp; Latest NAV <b>${f(L.r,4)}</b> on ${L.d}<div class="grid" style="margin-top:12px">
+ ${kpi('Break-even NAV',f(be,4))}${kpi(ok?'Cushion above break-even':'NAV must rise by',f(Math.abs(gap))+'%',ok?'up':'dn')}${kpi('Units held (total)',f(L.un,4))}${kpi('Buy NAV',f(BASE.buyNAV,4))}</div>
+ <div class="grid">${card('Maria – value',L.mv,L.mpl,mI)}${card('Maeda – value',L.dv,L.dpl,dI)}${card('Combined',L.tv,L.pl,L.inv)}</div></div>
+ <p class="note">Break-even includes the upfront charges and tax already paid at purchase.</p>`}
+function stats(s){const ch=s.slice(1).map(x=>x.chg);const m=ch.reduce((a,b)=>a+b,0)/ch.length;const sd=Math.sqrt(ch.reduce((a,b)=>a+(b-m)**2,0)/ch.length);return{m,sd,up:ch.filter(c=>c>0).length,dn:ch.filter(c=>c<0).length,flat:ch.filter(c=>c===0).length}}
+function reg(ys){const n=ys.length,xs=ys.map((_,i)=>i),mx=(n-1)/2,my=ys.reduce((a,b)=>a+b,0)/n;let sxy=0,sxx=0;xs.forEach((x,i)=>{sxy+=(x-mx)*(ys[i]-my);sxx+=(x-mx)**2});const b=sxx?sxy/sxx:0;return{b,a:my-b*mx}}
+function forecast(){const s=series(),L=s[s.length-1],N=Math.min(14,s.length),w=s.slice(-N).map(x=>x.r),R=reg(w),st=stats(s);
+ const days=[7,14,30];const sc=days.map(k=>{const base=Math.max(1,R.a+R.b*(N-1+k));const lo=L.r*(1+(st.m-st.sd*Math.sqrt(k))/100),hi=L.r*(1+(st.m+st.sd*Math.sqrt(k))/100);return{k,lo:Math.min(lo,base),base,hi:Math.max(hi,base)}});
+ const pl=n=>L.un*n-L.inv;
+ const pts=[...w,...Array.from({length:30},(_,i)=>Math.max(1,R.a+R.b*(N+i)))];
+ return `<h3>Forecasting</h3><div class="box"><b>Projection from last ${N} days (linear trend)</b><div class="grid" style="margin-top:10px">${kpi('Trend slope / day',sg(R.b)+' NAV',cl(R.b))}${kpi('Avg daily change',sg(st.m)+'%',cl(st.m))}${kpi('Daily volatility',f(st.sd)+'%')}</div>
+ <div class="tw"><table><tr><th>Horizon</th><th>Low NAV</th><th>Base NAV</th><th>High NAV</th><th>Base value</th><th>Base gain/loss</th><th>Low gain/loss</th><th>High gain/loss</th></tr>
+ ${sc.map(x=>`<tr><td>+${x.k} days</td><td>${f(x.lo,4)}</td><td>${f(x.base,4)}</td><td>${f(x.hi,4)}</td><td>${f(L.un*x.base)}</td><td class="${cl(pl(x.base))}">${sg(pl(x.base))}</td><td class="${cl(pl(x.lo))}">${sg(pl(x.lo))}</td><td class="${cl(pl(x.hi))}">${sg(pl(x.hi))}</td></tr>`).join('')}</table></div></div>
+ ${chart([{v:pts,c:'#c9a227',n:'Actual + projected'}],{t:'NAV projection (next 30 days)',d:1})}
+ <p class="note">A statistical projection of past NAV only — not financial advice. Mutual fund prices can fall as well as rise.</p>`}
+function ma(v,k){return v.map((_,i)=>{const a=v.slice(Math.max(0,i-k+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length})}
+function trend(){const s=series(),r=s.map(x=>x.r),st=stats(s),L=s[s.length-1];const d7=s.length>7?(L.r-s[s.length-8].r)/s[s.length-8].r*100:0,d30=(L.r-s[0].r)/s[0].r*100;
+ const wk=[];for(let i=0;i<s.length;i+=7){const g=s.slice(i,i+7);wk.push({a:g[0].d,b:g[g.length-1].d,o:g[0].r,c:g[g.length-1].r})}
+ return `<h3>Trend</h3><div class="grid">${kpi('Last 7 days',sg(d7)+'%',cl(d7))}${kpi('Since first rate',sg(d30)+'%',cl(d30))}${kpi('Up / Down / Flat days',st.up+' / '+st.dn+' / '+st.flat)}${kpi('Direction',L.r>ma(r,7).pop()?'Above 7-day avg ▲':'Below 7-day avg ▼',L.r>ma(r,7).pop()?'up':'dn')}</div>
+ ${chart([{v:r,c:'#1d6fd1',n:'NAV'},{v:ma(r,3),c:'#c9a227',n:'3-day avg'},{v:ma(r,7),c:'#0a8f5b',n:'7-day avg'}],{labels:s.map(x=>x.d),t:'NAV with moving averages',d:1})}
+ <div class="tw"><table><tr><th>Week</th><th>Open NAV</th><th>Close NAV</th><th>Change %</th></tr>${wk.map(x=>`<tr><td>${x.a} → ${x.b.slice(5)}</td><td>${f(x.o,4)}</td><td>${f(x.c,4)}</td><td class="${cl(x.c-x.o)}">${sg((x.c-x.o)/x.o*100)}</td></tr>`).join('')}</table></div>`}
+function graphs(){const s=series(),lb=s.map(x=>x.d);
+ return `<h3>Graphs</h3>${chart([{v:s.map(x=>x.r),c:'#1d6fd1',n:'Closing NAV'}],{labels:lb,t:'Closing NAV rate',d:1})}
+ ${chart([{v:s.map(x=>x.mv),c:'#c9a227',n:'Maria value'},{v:s.map(x=>x.dv),c:'#0a8f5b',n:'Maeda value'}],{labels:lb,t:'Portfolio value by partner (Rs)',d:0})}
+ ${chart([{v:s.map(x=>x.pl)}],{labels:lb,t:'Total gain / loss per day (Rs)',bars:1,d:0})}
+ ${chart([{v:s.map(x=>x.chg)}],{labels:lb,t:'Daily change %',bars:1,d:2})}`}
+function ratesV(){const ds=Object.keys(rates).sort(),ld=ds[ds.length-1],nx=new Date(new Date(ld+'T00:00:00Z').getTime()+864e5).toISOString().slice(0,10);
+ return `<h3>Daily Rates (from bank)</h3><div class="box"><div class="row"><div><label>Date</label><input type="date" id="rd" value="${nx}"></div><div><label>Closing NAV rate</label><input type="number" step="0.0001" id="rv" placeholder="e.g. 164.2500"></div><button class="btn gold" onclick="addRate()">Add / Update rate</button></div>
+ <p class="note">Last rate on file: ${ld} = ${f(rates[ld],4)}. Friday’s rate is applied automatically to Saturday and Sunday. Entering an existing date replaces its rate. Changes save online instantly; ⬆ Update pulls the latest.</p></div>
+ <div class="tw"><table><tr><th>Date</th><th>NAV</th><th></th></tr>${[...ds].reverse().slice(0,40).map(d=>`<tr><td>${d}</td><td>${f(rates[d],4)}</td><td><button class="btn ghost" onclick="delRate('${d}')">Delete</button></td></tr>`).join('')}</table></div>`}
+async function addRate(){const d=$('rd').value,v=parseFloat($('rv').value);if(!d||!(v>0)){toast('Enter a valid date and rate',1);return}if(await persist({action:'saveRate',date:d,nav:v},()=>{rates[d]=v;wkSet(rates,d)})){toast('Rate saved for '+d+(isFri(d)?' (also applied to Sat & Sun)':''));show('rates')}}
+async function delRate(d){if(Object.keys(rates).length<3){toast('Keep at least 2 rates',1);return}const v=rates[d];if(await persist({action:'deleteRate',date:d},()=>{delete rates[d];if(isFri(d))[1,2].forEach(k=>{const x=addD(d,k);if(rates[x]===v)delete rates[x]})}))show('rates')}
+function plansV(){const L=last(),tot=BASE.charges+BASE.tax,pct=tot/BASE.invest*100;
+ return `<h3>Investment Plans</h3><div class="box"><b>Add a plan</b><div class="row" style="margin-top:8px"><div><label>Plan name</label><input id="pn" placeholder="e.g. Top-up"></div><div><label>Date</label><input type="date" id="pd" value="${L.d}"></div><div><label>Maria amount</label><input type="number" id="pm" value="0"></div><div><label>Maeda amount</label><input type="number" id="pa" value="0"></div><div><label>Buy NAV</label><input type="number" step="0.0001" id="pv" value="${L.r}"></div><div><label>Charges+tax %</label><input type="number" step="0.01" id="pc" value="${f(pct,4)}"></div><div><label>Status</label><select id="ps"><option>Planned</option><option>Executed</option></select></div><button class="btn gold" onclick="addPlan()">Add plan</button></div>
+ <p class="note">Only “Executed” plans count in reports. Default charges = the same ${f(pct,4)}% paid on the first purchase.</p></div>
+ <div class="tw"><table><tr><th>Plan</th><th>Date</th><th>Maria</th><th>Maeda</th><th>NAV</th><th>Units</th><th>Status</th><th></th></tr>${plans.length?plans.map((p,i)=>`<tr><td>${esc(p.name)}</td><td>${p.date}</td><td>${f(p.mAmt)}</td><td>${f(p.dAmt)}</td><td>${f(p.nav,4)}</td><td>${f(p.units,4)}</td><td>${p.status}</td><td><button class="btn ghost" onclick="togPlan(${i})">${p.status==='Planned'?'Mark executed':'Mark planned'}</button> <button class="btn ghost" onclick="delPlan(${i})">Delete</button></td></tr>`).join(''):'<tr><td colspan="8" style="text-align:center">No plans yet</td></tr>'}</table></div>`}
+async function addPlan(){const m=+$('pm').value||0,a=+$('pa').value||0,nav=+$('pv').value,c=+$('pc').value||0;if(!$('pn').value||!(nav>0)||m+a<=0){toast('Name, NAV and an amount are required',1);return}
+ const k=1-c/100;const np=[...plans,{name:$('pn').value,date:$('pd').value,mAmt:m,dAmt:a,nav,mUnits:m*k/nav,dUnits:a*k/nav,units:(m+a)*k/nav,status:$('ps').value}];if(await persist({action:'savePlans',plans:np},()=>{plans=np})){toast('Plan added');show('plans')}}
+async function togPlan(i){const np=plans.map((p,k)=>k===i?{...p,status:p.status==='Planned'?'Executed':'Planned'}:p);if(await persist({action:'savePlans',plans:np},()=>{plans=np}))show('plans')}
+async function delPlan(i){const np=plans.filter((_,k)=>k!==i);if(await persist({action:'savePlans',plans:np},()=>{plans=np}))show('plans')}
+/* ---------- controls ---------- */
+async function doUpdate(){const ok=await load();toast(API_URL?(ok?'Updated – latest data from Google Sheet':'Sheet unreachable'):'Saved on this device',API_URL&&!ok);show(view)}
+async function doRefresh(){await load();toast('Refreshed');show(view)}
+async function doReset(){if(!confirm('Reset to the original Excel data? Added rates and plans will be removed'+(API_URL?' from the Google Sheet too.':'.')))return;detail=false;if(await persist({action:'reset'},()=>{rates={...SEED};plans=[]})){toast('Reset to original data');show('reports')}}
+</script></body></html>
