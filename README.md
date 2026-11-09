@@ -21,3 +21,9 @@ Rule: **Friday's rate is applied automatically to Saturday and Sunday.**
 ## Note
 Anyone who has the web-app URL can change the data (no password, as requested). Keep the URL private if that matters.
 Forecasts are statistical projections of past NAV only, not financial advice.
+
+## Update (calendar like the Excel)
+- The Rates tab now lists every date from 17 Jun to 31 Dec 2026 (like the Excel). NAV is blank until entered; blank rows show nothing.
+- Friday's rate fills Saturday and Sunday automatically (Excel's 18 & 19 Jul copy-paste rows included).
+- Use "Add many rates at once" on the Daily Rates page to paste a list: `2026-07-20, 164.25` or `20/07/2026 164.25`.
+- After pasting the new `Code.gs`: Deploy → Manage deployments → Edit → New version → Deploy, then run `setup` once more.
