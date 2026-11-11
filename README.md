@@ -27,3 +27,12 @@ Forecasts are statistical projections of past NAV only, not financial advice.
 - Friday's rate fills Saturday and Sunday automatically (Excel's 18 & 19 Jul copy-paste rows included).
 - Use "Add many rates at once" on the Daily Rates page to paste a list: `2026-07-20, 164.25` or `20/07/2026 164.25`.
 - After pasting the new `Code.gs`: Deploy → Manage deployments → Edit → New version → Deploy, then run `setup` once more.
+
+## Update – automatic bank-website rates, holidays, history from 01/06/2026
+1. Replace `index.html` on GitHub and paste the new `Code.gs` into Apps Script (Save).
+2. Run `setup` once (adds the Day column, the holiday defaults and the 01/06/2026 calendar).
+3. Run `installTrigger` once – the script then checks almeezangroup.com/fund-prices every evening (19:00 and 23:00) and stores the Meezan Islamic Fund rate for its validity date.
+4. Deploy → Manage deployments → Edit → New version → Deploy.
+- Saturday, Sunday and bank holidays take the previous business day's rate (add holidays in the app: Daily Rates → Events & bank holidays → Type: Holiday).
+- Refresh / Update / "Check now" also check the bank website and report any missing weekday rates.
+- The bank page publishes only the latest date, so older missing weekdays must be pasted ("Add many rates").

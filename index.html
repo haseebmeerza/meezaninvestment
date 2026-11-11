@@ -57,6 +57,17 @@ svg text{fill:var(--mut);font-size:11px}
 .mini{border:1px solid var(--brd);background:transparent;color:var(--dn);border-radius:6px;padding:2px 9px;cursor:pointer;font-size:12px}
 @media(max-width:900px){.rg{grid-template-columns:1fr}}
 @media(max-width:760px){.layout{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:8px;padding:8px}.menu{flex-direction:row;flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;padding:6px}.menu button{flex:0 0 auto;white-space:nowrap;padding:8px 10px}.banner .who{font-size:16px}}
+
+.bank{display:grid;grid-template-columns:1.2fr 1fr 1fr 1.7fr;gap:0;border:2px solid var(--gold);border-radius:12px;background:var(--card);box-shadow:0 4px 12px rgba(0,0,0,.1);margin-bottom:14px;overflow:hidden}
+.bank>div{padding:12px 16px;border-right:1px solid var(--brd);display:flex;flex-direction:column;gap:3px;justify-content:center}.bank>div:last-child{border-right:0}
+.bank small{color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em;font-size:11px}.bank .big{font-size:30px;font-weight:800;color:var(--navy);line-height:1.1}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .bank .big{color:var(--gold)}}
+.rg2{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(300px,1fr);gap:14px;align-items:start}
+.hist .tw{max-height:64vh}.hist td.r,.hist th.r{text-align:right;font-variant-numeric:tabular-nums}.hist td:nth-child(2),.hist th:nth-child(2){text-align:left}.hist td:nth-child(5),.hist th:nth-child(5){text-align:left}
+.hist tr:nth-child(even) td{background:rgba(120,140,170,.07)}.hist td,.hist th{padding:6px 12px}
+.tg{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid;white-space:nowrap}
+.tg-r{color:#0a8f5b;background:rgba(10,143,91,.1)}.tg-w{color:#1d6fd1;background:rgba(29,111,209,.1)}.tg-h{color:#b7791f;background:rgba(201,162,39,.16)}.tg-m{color:#c8352f;background:rgba(200,53,47,.1)}.tg-n{color:var(--mut);background:rgba(120,140,170,.1)}
+@media(max-width:1000px){.bank{grid-template-columns:1fr 1fr}.bank>div{border-bottom:1px solid var(--brd)}.rg2{grid-template-columns:1fr}}
 </style></head><body>
 
 <section id="home"><div class="login">
@@ -82,7 +93,7 @@ svg text{fill:var(--mut);font-size:11px}
 <script>
 const BASE={invest:100000,charges:1955,tax:293.5,buyNAV:170.1922,names:['Maria','Maeda']};
 const SEED={"2026-06-17":170.1922,"2026-06-18":170.1922,"2026-06-19":170.1922,"2026-06-20":170.1922,"2026-06-21":170.1922,"2026-06-22":169.1158,"2026-06-23":168.9046,"2026-06-24":168.9046,"2026-06-25":168.9046,"2026-06-26":168.9046,"2026-06-27":168.9046,"2026-06-28":168.9046,"2026-06-29":168.6041,"2026-06-30":169.7,"2026-07-01":172.0482,"2026-07-02":172.6587,"2026-07-03":173.5081,"2026-07-04":173.5081,"2026-07-05":173.5081,"2026-07-06":175.3126,"2026-07-07":173.5889,"2026-07-08":169.023,"2026-07-09":168.8494,"2026-07-10":169.6963,"2026-07-11":169.6963,"2026-07-12":169.6963,"2026-07-13":167.1206,"2026-07-14":161.1499,"2026-07-15":162.6919,"2026-07-16":165.6168,"2026-07-17":163.0619,"2026-07-18":163.0619,"2026-07-19":163.0619,"2026-07-20":163.0872,"2026-07-21":163.063,"2026-07-22":161.5665,"2026-07-23":159.0563,"2026-07-24":158.5053,"2026-07-25":158.5053,"2026-07-26":158.5053,"2026-07-27":165.3995,"2026-07-28":164.9907,"2026-07-29":163.085,"2026-07-30":162.0444,"2026-07-31":162.6489,"2026-08-01":162.6489,"2026-08-02":162.6489,"2026-08-03":164.9567,"2026-08-04":163.8439,"2026-08-05":166.501,"2026-08-06":168.0725,"2026-08-07":167.95,"2026-08-08":167.95,"2026-08-09":167.95,"2026-08-10":167.7894,"2026-08-11":166.0406,"2026-08-12":166.3348,"2026-08-13":166.2893,"2026-08-14":166.2893,"2026-08-15":166.2893,"2026-08-16":166.2893,"2026-08-17":167.0441,"2026-08-18":164.1014,"2026-08-19":162.9894,"2026-08-20":163.1252,"2026-08-21":164.696,"2026-08-22":164.696,"2026-08-23":164.696,"2026-08-24":164.5455,"2026-08-25":164.5741,"2026-08-26":164.3279,"2026-08-27":164.3279,"2026-08-28":164.8071,"2026-08-29":164.8071,"2026-08-30":164.8071,"2026-08-31":164.8302,"2026-09-01":164.8722,"2026-09-02":163.1833,"2026-09-03":163.241,"2026-09-04":163.6147,"2026-09-05":163.6147,"2026-09-06":163.6147,"2026-09-07":161.8187,"2026-09-08":160.8015,"2026-09-09":160.0133,"2026-09-10":156.6644,"2026-09-11":158.6359,"2026-09-12":158.6359,"2026-09-13":158.6359,"2026-09-14":156.0864,"2026-09-15":157.0741,"2026-09-16":155.6762,"2026-09-17":156.5435,"2026-09-18":159.6763,"2026-09-19":159.6763,"2026-09-20":159.6763,"2026-09-21":158.4533,"2026-09-22":158.9749,"2026-09-23":160.1294,"2026-09-24":160.13,"2026-09-25":158.156,"2026-09-26":158.156,"2026-09-27":158.156,"2026-09-28":158.068,"2026-09-29":157.5153,"2026-09-30":157.9976,"2026-10-01":156.7499,"2026-10-02":156.2384,"2026-10-03":156.2384,"2026-10-04":156.2384,"2026-10-05":154.3667,"2026-10-06":156.9964,"2026-10-07":156.8103,"2026-10-08":155.8041,"2026-10-09":155.4522,"2026-10-10":155.4522,"2026-10-11":155.4522,"2026-10-12":153.6078,"2026-10-13":153.4495,"2026-10-14":154.1391,"2026-10-15":154.8773,"2026-10-16":154.7994,"2026-10-17":154.7994,"2026-10-18":154.7994,"2026-10-19":154.49,"2026-10-20":153.6336,"2026-10-21":153.96,"2026-10-22":152.076,"2026-10-23":150.3916,"2026-10-24":150.3916,"2026-10-25":150.3916,"2026-10-26":151.1222,"2026-10-27":151.8735,"2026-10-28":152.7288,"2026-10-29":154.04,"2026-10-30":153.1358,"2026-10-31":153.1358,"2026-11-01":153.1358,"2026-11-02":153.0154};
-let rates={...SEED},plans=[],events=[],view='reports',detail=false,user='';
+let lastSync=null,rates={...SEED},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dmy=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
@@ -103,22 +114,29 @@ function pStart(msg){const p=$('prog');p.style.display='block';let v=8;$('pbar')
 const API_URL='https://script.google.com/macros/s/AKfycbzCf-lMnsb133pzun65jtYE27sGg5rbZIzZ0S8FLzUMyMA9DusWJQEnPQjYrB2NSOsvcA/exec';
 const addD=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
 const isFri=d=>new Date(d+'T00:00:00Z').getUTCDay()===5;
-function wkSet(o,d){if(isFri(d)){o[addD(d,1)]=o[d];o[addD(d,2)]=o[d]}}
-function fillWk(o){Object.keys(o).forEach(d=>{if(isFri(d))[1,2].forEach(k=>{const x=addD(d,k);if(o[x]===undefined)o[x]=o[d]})})}
+function defEv(){return [{date:'2026-08-14',title:'Independence Day',note:'Bank holiday',type:'Holiday'},{date:'2026-11-09',title:'Iqbal Day',note:'Bank holiday',type:'Holiday'},{date:'2026-12-25',title:'Quaid-e-Azam Day / Christmas',note:'Bank holiday',type:'Holiday'}]}
+function holSet(){const s={};events.forEach(e=>{if(e.type==='Holiday')s[e.date]=1});return s}
+function nonBiz(d,H){const w=new Date(d+'T00:00:00Z').getUTCDay();return w===0||w===6||(H||holSet())[d]===1}
+function wkSet(o,d){const H=holSet();let x=addD(d,1);while(nonBiz(x,H)){o[x]=o[d];x=addD(x,1)}}
+function fillWk(o){const H=holSet();Object.keys(o).sort().forEach(d=>{if(nonBiz(d,H))return;let x=addD(d,1);while(nonBiz(x,H)){if(o[x]===undefined)o[x]=o[d];x=addD(x,1)}})}
 function lsGet(){try{return JSON.parse(localStorage.getItem('mif')||'null')}catch(e){return null}}
 function lsSet(o){try{localStorage.setItem('mif',JSON.stringify(o))}catch(e){}}
 function setSync(s){const e=$('sync');if(!e)return;e.textContent=!API_URL?'● This device only':s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
 async function api(body){const o=body?{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}:{};
  const r=await fetch(API_URL+(body?'':(API_URL.includes('?')?'&':'?')+'t='+Date.now()),o);const j=await r.json();if(j.error)throw new Error(j.error);return j}
-function applyState(j){rates=j.rates;plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}))}
+function applyState(j){rates=j.rates;plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));fillWk(rates);if(j.sync)lastSync=j.sync}
 async function load(quiet){const P=(!quiet&&API_URL)?pStart('Connecting to Google Sheet… fetching latest rates'):null;
  if(API_URL){try{applyState(await api());lsSet({rates,plans,events});setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}catch(e){P&&P.done(false,'Sheet unreachable');setSync('err');toast('Cannot reach Google Sheet – showing last saved copy',1)}}
- const d=lsGet();if(d&&d.rates&&Object.keys(d.rates).length){rates=d.rates;plans=d.plans||[];events=d.events||[]}else{rates={...SEED};plans=[];events=[]}
+ const d=lsGet();if(d&&d.rates&&Object.keys(d.rates).length){rates=d.rates;plans=d.plans||[];events=d.events||[]}else{rates={...SEED};plans=[];events=defEv()}
  fillWk(rates);setSync();return false}
+async function runSync(silent){if(!API_URL)return;const P=silent?null:pStart('Checking Al Meezan website…');
+ try{const j=await api({action:'sync'});applyState(j);lsSet({rates,plans,events});setSync('cloud');if(P)P.done(true,lastSync&&lastSync.ok?lastSync.msg:'Checked – '+(lastSync&&lastSync.msg||''))}
+ catch(e){lastSync={ok:false,msg:e.message};setSync('err');if(P)P.done(false,'Sync failed')}}
+async function syncNow(){await runSync(false);show('rates')}
 async function persist(body,localFn){const P=pStart(API_URL?'Saving to Google Sheet… recalculating':'Saving…');
  if(API_URL){try{applyState(await api(body));lsSet({rates,plans,events});setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err');toast('Not saved – Google Sheet unreachable ('+e.message+')',1);return false}}
  localFn();fillWk(rates);lsSet({rates,plans,events});P.done(true,'Saved on this device');return true}
-(async()=>{fillWk(rates);await load();
+(async()=>{fillWk(rates);await load();await runSync(true);
  try{const n=sessionStorage.getItem('mifu');if(n)enter(n)}catch(e){}
  if(API_URL)setInterval(()=>{if(user&&view!=='rates'&&view!=='plans')load(1).then(()=>show(view,1))},60000)})();
 /* ---------- model ---------- */
@@ -229,23 +247,42 @@ function graphs(){const s=series(),lb=s.map(x=>x.d),r=s.map(x=>x.r),L=s[s.length
  ${donut(BANK.funds.map((x,i)=>({n:i?'MIIF (Income)':'MIF (Equity)',v:x.val,c:i?'#c9a227':'#1d6fd1'})),{t:'Portfolio allocation (bank, '+dmy(BANK.asat)+')',center:'2 funds'})}
  ${donut([{n:'Maria',v:L.mv,c:'#1d6fd1'},{n:'Maeda',v:L.dv,c:'#0a8f5b'}],{t:'Partner split (latest value)',center:'50 / 50'})}
  </div>`}
-function ratesV(){const ds=Object.keys(rates).sort(),ld=ds[ds.length-1],nx=addD(ld,1);const td=new Date().toISOString().slice(0,10);let miss=0,first='';for(let d=nx;d<=td;d=addD(d,1)){const w=new Date(d+'T00:00:00Z').getUTCDay();if(w!==0&&w!==6&&rates[d]===undefined){miss++;if(!first)first=d}}
- const lr=rates[ld],pr=rates[ds[ds.length-2]],r7=ds.slice(-7).reduce((a,d)=>a+rates[d],0)/Math.min(7,ds.length);
+const DAYN=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],CAL_START='2026-06-01';
+function ratesV(){const H=holSet(),ds=Object.keys(rates).sort(),first=ds[0],ld=ds[ds.length-1],pd=ds[ds.length-2];
+ const td=new Date().toLocaleDateString('en-CA'),end=ld>td?ld:td;
+ const tag=(d)=>{const w=new Date(d+'T00:00:00Z').getUTCDay(),has=rates[d]!==undefined;
+  if(d<first)return['No data','tg-n'];
+  if(!has)return H[d]?['Holiday – awaiting','tg-h']:w===0||w===6?['Weekend – awaiting','tg-w']:['Missing','tg-m'];
+  if(H[d])return['Holiday Rate','tg-h'];if(w===0||w===6)return['Weekend (Fri Rate)','tg-w'];return['Regular Trading','tg-r']};
+ const rows=[];let prev=null,miss=[];
+ for(let d=CAL_START;d<=end;d=addD(d,1)){const t=tag(d),r=rates[d],w=new Date(d+'T00:00:00Z').getUTCDay();
+  const chg=(r!==undefined&&prev!==null)?(r-prev)/prev*100:null;if(r!==undefined)prev=r;
+  if(t[0]==='Missing'&&d<=td)miss.push(d);
+  rows.push(`<tr><td>${dmy(d)}</td><td>${DAYN[w]}</td><td class="r">${r!==undefined?f(r,4):'—'}</td><td class="r ${chg===null?'':cl(chg)}">${chg===null?'':sg(chg)+'%'}</td><td><span class="tg ${t[1]}">${t[0]}</span></td><td>${t[1]==='tg-r'?`<button class="mini" onclick="delRate('${d}')">Del</button>`:''}</td></tr>`)}
+ const lr=rates[ld],pr=rates[pd],lt=tag(ld),r7=ds.slice(-7).reduce((a,d)=>a+rates[d],0)/Math.min(7,ds.length);
+ const sy=lastSync,syTxt=!API_URL?'Connect the Google Sheet to enable automatic bank-website updates':!sy?'Not checked yet – tap Check now':(sy.ok?'✓ ':'⚠ ')+esc(sy.msg);
  const ev=[...events].sort((a,b)=>a.date<b.date?-1:1);
  const notices=['Report any error or discrepancy to the bank within 7 working days of receiving a statement.','Accounts with no activity for 3 years are marked “Dormant”.','Sales load: up to 3% of NAV (direct or third-party portals); up to 1.5% via the AMC’s own online portal.','Dividend option on this account: Re-invest.','Queries: info@almeezangroup.com · 0800-HALAL (42525).'];
- return `<h3>Daily Rates (from bank)</h3><div class="rg"><div class="rt">
- <div class="box"><div class="row"><div><label>Date</label><input id="rd" value="${dmy(nx)}" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>NAV rate</label><input type="number" step="0.0001" id="rv" placeholder="000.0000"></div></div><div style="margin-top:8px"><button class="btn gold" onclick="addRate()">Add / Update rate</button></div>
- <p class="note" style="margin-bottom:0"><b class="${miss?'dn':'up'}">${miss?miss+' weekday rate(s) missing up to today (from '+dmy(first)+')':'No weekday rates missing up to today'}</b><br>Friday’s rate is applied to Saturday and Sunday automatically.</p></div>
- <div class="box"><b>Add many rates</b><textarea id="rb" rows="3" style="width:100%;margin-top:8px;padding:9px;border:1.5px solid var(--brd);border-radius:8px;background:var(--card);color:var(--ink)" placeholder="dd/mm/yyyy, 000.0000 (one per line)"></textarea><div style="margin-top:8px"><button class="btn gold" onclick="addBulk()">Add all</button></div></div>
- <div class="tw"><table><tr><th>Date</th><th>Rate</th><th>Del</th></tr>${[...ds].reverse().slice(0,60).map(d=>`<tr><td>${dmy(d)}</td><td>${f(rates[d],4)}</td><td><button class="mini" onclick="delRate('${d}')">Del</button></td></tr>`).join('')}</table></div></div>
+ return `<h3>Daily Rates (from bank)</h3>
+ <div class="bank"><div><small>Meezan Islamic Fund · NAV</small><div class="big">${f(lr,4)}</div><div class="${cl(lr-pr)}">${sg((lr-pr)/pr*100)}% vs ${dmy(pd)}</div></div>
+ <div><small>Rate date</small><b style="font-size:18px">${dmy(ld)}</b><span><span class="tg ${lt[1]}">${lt[0]}</span></span></div>
+ <div><small>Today · ${dmy(td)}</small><b style="font-size:18px">${rates[td]!==undefined?f(rates[td],4):'Awaiting bank rate'}</b><span class="note">7-day avg ${f(r7,4)}</span></div>
+ <div><small>Bank website · almeezangroup.com</small><b style="font-size:13.5px;font-weight:600">${syTxt}</b><span>${API_URL?'<button class="btn gold" style="padding:5px 12px" onclick="syncNow()">Check now</button>':''}</span></div></div>
+ ${miss.length?`<div class="box" style="border-color:var(--dn)"><b class="dn">${miss.length} weekday rate(s) missing</b> <span class="note">${miss.slice(0,14).map(dmy).join(', ')}${miss.length>14?' …':''} — Check now, or paste them in “Add many rates”. Weekends and holidays fill automatically from the day before.</span></div>`:`<div class="box" style="border-color:var(--up)"><b class="up">History complete</b> <span class="note">no weekday rates missing from ${dmy(first)} to today.</span></div>`}
+ <div class="rg2"><div class="box hist" style="padding:0;overflow:hidden"><div style="padding:10px 14px;border-bottom:1.5px solid var(--brd)"><b>Rate history</b> <span class="note">since ${dmy(CAL_START)} · ${rows.length} days · newest first</span></div>
+ <div class="tw" style="border:0;border-radius:0"><table><tr><th>Date</th><th>Day</th><th class="r">NAV rate</th><th class="r">Change</th><th>Status</th><th></th></tr>${rows.reverse().join('')}</table></div></div>
  <div>
- <div class="grid">${kpi('Latest rate · '+dmy(ld),f(lr,4))}${kpi('Change vs previous',sg((lr-pr)/pr*100)+'%',cl(lr-pr))}${kpi('7-day average',f(r7,4))}</div>
- <div class="box"><b>Upcoming events</b> <span class="note">add bank dates, dividend / payout dates, reminders</span>
- <div class="row" style="margin:8px 0"><div><label>Date</label><input id="ed" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>Event</label><input id="et" placeholder="e.g. Dividend declaration"></div><div><label>Note</label><input id="en" placeholder="optional"></div><button class="btn gold" onclick="addEvent()">Add event</button></div>
- <div class="tw" style="max-height:30vh"><table><tr><th>Date</th><th>Event</th><th>Del</th></tr>${ev.length?ev.map(e=>`<tr><td>${dmy(e.date)}</td><td style="text-align:left;white-space:normal">${esc(e.title)}${e.note?'<div class="note">'+esc(e.note)+'</div>':''}</td><td><button class="mini" onclick="delEvent(${events.indexOf(e)})">Del</button></td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center">No events yet</td></tr>'}</table></div></div>
+ <div class="box"><b>Add a rate</b><div class="row" style="margin-top:8px"><div><label>Date</label><input id="rd" value="${dmy(addD(ld,1))}" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>NAV rate</label><input type="number" step="0.0001" id="rv" placeholder="000.0000"></div></div><div style="margin-top:8px"><button class="btn gold" onclick="addRate()">Add / Update rate</button></div><p class="note" style="margin-bottom:0">Saturday, Sunday and bank holidays take the previous business day’s rate automatically.</p></div>
+ <div class="box"><b>Add many rates</b><textarea id="rb" rows="3" style="width:100%;margin-top:8px;padding:9px;border:1.5px solid var(--brd);border-radius:8px;background:var(--card);color:var(--ink)" placeholder="dd/mm/yyyy, 000.0000 (one per line)"></textarea><div style="margin-top:8px"><button class="btn gold" onclick="addBulk()">Add all</button></div></div>
+ <div class="box"><b>Events &amp; bank holidays</b>
+ <div class="row" style="margin:8px 0"><div><label>Date</label><input id="ed" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>Type</label><select id="ey"><option>Event</option><option>Holiday</option></select></div><div><label>Title</label><input id="et" placeholder="e.g. Eid holiday"></div><div><label>Note</label><input id="en" placeholder="optional"></div><button class="btn gold" onclick="addEvent()">Add</button></div>
+ <div class="tw" style="max-height:26vh"><table><tr><th>Date</th><th>Event</th><th>Del</th></tr>${ev.length?ev.map(e=>`<tr><td>${dmy(e.date)}</td><td style="text-align:left;white-space:normal">${e.type==='Holiday'?'<span class="tg tg-h">Holiday</span> ':''}${esc(e.title)}${e.note?'<div class="note">'+esc(e.note)+'</div>':''}</td><td><button class="mini" onclick="delEvent(${events.indexOf(e)})">Del</button></td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center">No events yet</td></tr>'}</table></div>
+ <p class="note" style="margin-bottom:0">Add holidays here: that day takes the rate of the day before.</p></div>
  <div class="box"><b>Bank notices &amp; information</b><ul style="margin:8px 0 0;padding-left:18px">${notices.map(t=>`<li class="note" style="margin:4px 0">${t}</li>`).join('')}</ul><p class="note" style="margin-bottom:0">From the Al Meezan statement dated ${dmy(BANK.printed)}.</p></div>
  </div></div>`}
-async function addEvent(){const d=pIso($('ed').value),t=$('et').value.trim();if(!d||!t){toast('Enter a date (dd/mm/yyyy) and an event',1);return}const ne=[...events,{date:d,title:t,note:$('en').value.trim()}];if(await persist({action:'saveEvents',events:ne},()=>{events=ne}))show('rates')}
+async function addEvent(){const d=pIso($('ed').value),t=$('et').value.trim(),ty=$('ey').value==='Holiday'?'Holiday':'Event';if(!d||!t){toast('Enter a date (dd/mm/yyyy) and a title',1);return}
+ const ne=[...events,{date:d,title:t,note:$('en').value.trim(),type:ty}];
+ if(await persist({action:'saveEvents',events:ne},()=>{events=ne})){if(ty==='Holiday'&&API_URL)await persist({action:'audit'},()=>{});show('rates')}}
 async function delEvent(i){const ne=events.filter((_,k)=>k!==i);if(await persist({action:'saveEvents',events:ne},()=>{events=ne}))show('rates')}
 async function addRate(){const d=pIso($('rd').value),v=parseFloat($('rv').value);if(!d||!(v>0)){toast('Enter a valid date (dd/mm/yyyy) and rate',1);return}if(await persist({action:'saveRate',date:d,nav:v},()=>{rates[d]=v;wkSet(rates,d)})){toast('Rate saved for '+dmy(d)+(isFri(d)?' (also applied to Sat & Sun)':''));show('rates')}}
 async function addBulk(){const m={};let bad=0;($('rb').value||'').split(/\n/).forEach(l=>{if(!l.trim())return;const x=l.trim().match(/^([^\s,;]+)[\s,;\t]+(\d+(?:\.\d+)?)$/);if(!x){bad++;return}const d=pIso(x[1]);if(!d||!(+x[2]>0)){bad++;return}m[d]=+x[2]});
@@ -258,7 +295,7 @@ async function addBulk(){const m={};let bad=0;($('rb').value||'').split(/\n/).fo
   done+=c.length;P.set(Math.round(done/k.length*100),'Adding rates… '+done+' of '+k.length)}
  if(ok){lsSet({rates,plans,events});setSync(API_URL?'cloud':undefined)}P.done(ok,ok?k.length+' rate(s) saved':'Not completed');
  if(ok){toast(k.length+' rate(s) added'+(bad?' · '+bad+' line(s) skipped':''));show('rates')}}
-async function delRate(d){if(Object.keys(rates).length<3){toast('Keep at least 2 rates',1);return}const v=rates[d];if(await persist({action:'deleteRate',date:d},()=>{delete rates[d];if(isFri(d))[1,2].forEach(k=>{const x=addD(d,k);if(rates[x]===v)delete rates[x]})}))show('rates')}
+async function delRate(d){if(Object.keys(rates).length<3){toast('Keep at least 2 rates',1);return}const v=rates[d];if(await persist({action:'deleteRate',date:d},()=>{delete rates[d];const H=holSet();let x=addD(d,1);while(nonBiz(x,H)&&rates[x]===v){delete rates[x];x=addD(x,1)}}))show('rates')}
 function plansV(){const L=last(),tot=BASE.charges+BASE.tax,pct=tot/BASE.invest*100;
  return `<h3>Investment Plans</h3><div class="box"><b>Add a plan</b><div class="row" style="margin-top:8px"><div><label>Plan name</label><input id="pn" placeholder="e.g. Top-up"></div><div><label>Date</label><input id="pd" value="${dmy(L.d)}" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>Maria amount</label><input type="number" id="pm" value="0"></div><div><label>Maeda amount</label><input type="number" id="pa" value="0"></div><div><label>Buy NAV</label><input type="number" step="0.0001" id="pv" value="${L.r}"></div><div><label>Charges+tax %</label><input type="number" step="0.01" id="pc" value="${f(pct,4)}"></div><div><label>Status</label><select id="ps"><option>Planned</option><option>Executed</option></select></div><button class="btn gold" onclick="addPlan()">Add plan</button></div>
  <p class="note">Only “Executed” plans count in reports. Default charges = the same ${f(pct,4)}% paid on the first purchase.</p></div>
@@ -268,7 +305,7 @@ async function addPlan(){const m=+$('pm').value||0,a=+$('pa').value||0,nav=+$('p
 async function togPlan(i){const np=plans.map((p,k)=>k===i?{...p,status:p.status==='Planned'?'Executed':'Planned'}:p);if(await persist({action:'savePlans',plans:np},()=>{plans=np}))show('plans')}
 async function delPlan(i){const np=plans.filter((_,k)=>k!==i);if(await persist({action:'savePlans',plans:np},()=>{plans=np}))show('plans')}
 /* ---------- controls ---------- */
-async function doUpdate(){const ok=await load();toast(API_URL?(ok?'Updated – latest data from Google Sheet':'Sheet unreachable'):'Saved on this device',API_URL&&!ok);show(view)}
-async function doRefresh(){await load();toast('Refreshed');show(view)}
+async function doUpdate(){const ok=await load();await runSync(false);toast(API_URL?(ok?'Updated – latest data from Google Sheet':'Sheet unreachable'):'Saved on this device',API_URL&&!ok);show(view)}
+async function doRefresh(){await load();await runSync(false);toast('Refreshed');show(view)}
 async function doReset(){if(!confirm('Reset to the original Excel data? Added rates and plans will be removed'+(API_URL?' from the Google Sheet too.':'.')))return;detail=false;if(await persist({action:'reset'},()=>{rates={...SEED};plans=[]})){toast('Reset to original data');show('reports')}}
 </script></body></html>
