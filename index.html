@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Meezan Investment Tracker</title>
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef2f7;--card:#fff;--ink:#12233d;--mut:#5d6b82;--brd:#c5d0e0;--navy:#0f2a52;--gold:#c9a227;--up:#0a8f5b;--dn:#c8352f;--side:#0f2a52}
@@ -68,32 +69,44 @@ svg text{fill:var(--mut);font-size:11px}
 .tg{display:inline-block;padding:2px 9px;border-radius:99px;font-size:11.5px;font-weight:700;border:1px solid;white-space:nowrap}
 .tg-r{color:#0a8f5b;background:rgba(10,143,91,.1)}.tg-w{color:#1d6fd1;background:rgba(29,111,209,.1)}.tg-h{color:#b7791f;background:rgba(201,162,39,.16)}.tg-m{color:#c8352f;background:rgba(200,53,47,.1)}.tg-n{color:var(--mut);background:rgba(120,140,170,.1)}
 @media(max-width:1000px){.bank{grid-template-columns:1fr 1fr}.bank>div{border-bottom:1px solid var(--brd)}.rg2{grid-template-columns:1fr}}
+
+.bank{grid-template-columns:minmax(210px,1.15fr) minmax(160px,.9fr) minmax(190px,1fr) minmax(300px,1.9fr)}
+.bank>div{min-width:0;padding:14px 18px}.bank .big{white-space:nowrap}.bank b{white-space:normal;overflow-wrap:break-word}
+@media(max-width:1250px){.bank{grid-template-columns:1fr 1fr}.bank>div{border-bottom:1px solid var(--brd)}}
+@media(max-width:560px){.bank{grid-template-columns:1fr}}
+.rates-wrap{display:flex;flex-direction:column;height:100%;min-height:0}
+.rates-wrap>.rg2{flex:1;min-height:0;align-items:stretch}
+.rates-wrap .hist{display:flex;flex-direction:column;margin-bottom:0;min-height:0}
+.rates-wrap .hist .tw{flex:1;min-height:240px;max-height:none}
+.rates-side{overflow-y:auto;min-height:0}
+@media(max-width:1000px){.rates-wrap{height:auto}.rates-wrap>.rg2{display:grid}.rates-wrap .hist .tw{flex:none;max-height:70vh}.rates-side{overflow:visible}}
+#foot{flex:none;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 16px;background:var(--side);color:#cfd9ea;font-size:12px;border-top:2px solid var(--gold)}
+.fab{bottom:calc(46px + env(safe-area-inset-bottom,0px))}
+.cc.fit{max-width:none}.cc.fit svg text{font-size:11px}
 </style></head><body>
 
 <section id="home"><div class="login">
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 1.0 · Data from the Excel “AMIF.200K-Daily Sheet”.</p></div>
- <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Name only — no password.</p>
- <label>Your name</label><input id="uname" placeholder="e.g. Maria" maxlength="30" style="margin:6px 0 10px">
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.0.0 · Private – authorised users only.</p></div>
+ <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
+ <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
- <p class="note" style="text-align:center;margin:12px 0 6px">Quick select</p>
- <div style="display:flex;gap:8px"><button class="btn ghost" style="flex:1" onclick="login('Maria')">Maria</button><button class="btn ghost" style="flex:1" onclick="login('Maeda')">Maeda</button></div>
  </div></div></section>
 
 <section id="app">
- <div class="banner"><div><div class="who">Maria <span>&amp;</span> Maeda</div><div class="fund">Al Meezan Islamic Fund (MIF) · Investment Fund · Portfolio No. 902300-1</div></div>
+ <div class="banner"><div><div class="who">Maria <span>&amp;</span> Maeda</div><div class="fund" id="fundline">Al Meezan Islamic Fund (MIF) · Investment Fund</div></div>
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.0.0</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-const BASE={invest:100000,charges:1955,tax:293.5,buyNAV:170.1922,names:['Maria','Maeda']};
-const SEED={"2026-06-17":170.1922,"2026-06-18":170.1922,"2026-06-19":170.1922,"2026-06-20":170.1922,"2026-06-21":170.1922,"2026-06-22":169.1158,"2026-06-23":168.9046,"2026-06-24":168.9046,"2026-06-25":168.9046,"2026-06-26":168.9046,"2026-06-27":168.9046,"2026-06-28":168.9046,"2026-06-29":168.6041,"2026-06-30":169.7,"2026-07-01":172.0482,"2026-07-02":172.6587,"2026-07-03":173.5081,"2026-07-04":173.5081,"2026-07-05":173.5081,"2026-07-06":175.3126,"2026-07-07":173.5889,"2026-07-08":169.023,"2026-07-09":168.8494,"2026-07-10":169.6963,"2026-07-11":169.6963,"2026-07-12":169.6963,"2026-07-13":167.1206,"2026-07-14":161.1499,"2026-07-15":162.6919,"2026-07-16":165.6168,"2026-07-17":163.0619,"2026-07-18":163.0619,"2026-07-19":163.0619,"2026-07-20":163.0872,"2026-07-21":163.063,"2026-07-22":161.5665,"2026-07-23":159.0563,"2026-07-24":158.5053,"2026-07-25":158.5053,"2026-07-26":158.5053,"2026-07-27":165.3995,"2026-07-28":164.9907,"2026-07-29":163.085,"2026-07-30":162.0444,"2026-07-31":162.6489,"2026-08-01":162.6489,"2026-08-02":162.6489,"2026-08-03":164.9567,"2026-08-04":163.8439,"2026-08-05":166.501,"2026-08-06":168.0725,"2026-08-07":167.95,"2026-08-08":167.95,"2026-08-09":167.95,"2026-08-10":167.7894,"2026-08-11":166.0406,"2026-08-12":166.3348,"2026-08-13":166.2893,"2026-08-14":166.2893,"2026-08-15":166.2893,"2026-08-16":166.2893,"2026-08-17":167.0441,"2026-08-18":164.1014,"2026-08-19":162.9894,"2026-08-20":163.1252,"2026-08-21":164.696,"2026-08-22":164.696,"2026-08-23":164.696,"2026-08-24":164.5455,"2026-08-25":164.5741,"2026-08-26":164.3279,"2026-08-27":164.3279,"2026-08-28":164.8071,"2026-08-29":164.8071,"2026-08-30":164.8071,"2026-08-31":164.8302,"2026-09-01":164.8722,"2026-09-02":163.1833,"2026-09-03":163.241,"2026-09-04":163.6147,"2026-09-05":163.6147,"2026-09-06":163.6147,"2026-09-07":161.8187,"2026-09-08":160.8015,"2026-09-09":160.0133,"2026-09-10":156.6644,"2026-09-11":158.6359,"2026-09-12":158.6359,"2026-09-13":158.6359,"2026-09-14":156.0864,"2026-09-15":157.0741,"2026-09-16":155.6762,"2026-09-17":156.5435,"2026-09-18":159.6763,"2026-09-19":159.6763,"2026-09-20":159.6763,"2026-09-21":158.4533,"2026-09-22":158.9749,"2026-09-23":160.1294,"2026-09-24":160.13,"2026-09-25":158.156,"2026-09-26":158.156,"2026-09-27":158.156,"2026-09-28":158.068,"2026-09-29":157.5153,"2026-09-30":157.9976,"2026-10-01":156.7499,"2026-10-02":156.2384,"2026-10-03":156.2384,"2026-10-04":156.2384,"2026-10-05":154.3667,"2026-10-06":156.9964,"2026-10-07":156.8103,"2026-10-08":155.8041,"2026-10-09":155.4522,"2026-10-10":155.4522,"2026-10-11":155.4522,"2026-10-12":153.6078,"2026-10-13":153.4495,"2026-10-14":154.1391,"2026-10-15":154.8773,"2026-10-16":154.7994,"2026-10-17":154.7994,"2026-10-18":154.7994,"2026-10-19":154.49,"2026-10-20":153.6336,"2026-10-21":153.96,"2026-10-22":152.076,"2026-10-23":150.3916,"2026-10-24":150.3916,"2026-10-25":150.3916,"2026-10-26":151.1222,"2026-10-27":151.8735,"2026-10-28":152.7288,"2026-10-29":154.04,"2026-10-30":153.1358,"2026-10-31":153.1358,"2026-11-01":153.1358,"2026-11-02":153.0154};
-let lastSync=null,rates={...SEED},plans=[],events=[],view='reports',detail=false,user='';
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.0.0';let isAdmin=false;
+let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dmy=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
@@ -103,14 +116,14 @@ function fmtDate(raw){let o='',s=0,l=0;const mx=[2,2,4];for(const c of String(ra
 if(document.addEventListener)document.addEventListener('input',e=>{const t=e.target;if(!t||!t.classList||!t.classList.contains('dt'))return;const v=fmtDate(t.value);if(v!==t.value)t.value=v});
 const f=(n,d=2)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sg=n=>(n>=0?'+':'')+f(n);const cl=n=>n>=0?'up':'dn';
-const UNITS_TOTAL=1155.5629,unitsEach=UNITS_TOTAL/2,netEach=BASE.invest-BASE.charges-BASE.tax;BASE.buyNAV=netEach/unitsEach; // units per bank statement (30-Sep-2026), split 50/50
+let UNITS_TOTAL=0,unitsEach=0,netEach=0;
+function setCfg(c){BASE.invest=c.invest;BASE.charges=c.charges;BASE.tax=c.tax;UNITS_TOTAL=c.unitsTotal;unitsEach=UNITS_TOTAL/2;netEach=BASE.invest-BASE.charges-BASE.tax;BASE.buyNAV=netEach/unitsEach;BANK=c.bank;const fl=$('fundline');if(fl)fl.textContent='Al Meezan Islamic Fund (MIF) · Investment Fund · Portfolio No. '+c.portfolio}
 function toast(m,bad){const t=$('toast');t.textContent=m;t.style.background=bad?'#c8352f':'#0a8f5b';t.style.display='block';setTimeout(()=>t.style.display='none',bad?8000:2600)}
 /* ---------- progress ---------- */
 let _pt=0;
 function pStart(msg){const p=$('prog');p.style.display='block';let v=8;$('pbar').style.width=v+'%';$('pbar').style.background='';$('ptxt').textContent=msg+' '+v+'%';clearInterval(_pt);_pt=setInterval(()=>{v+=(92-v)*.07;$('pbar').style.width=v+'%';$('ptxt').textContent=msg+' '+Math.round(v)+'%'},180);
  return{set(pc,m){clearInterval(_pt);v=pc;$('pbar').style.width=pc+'%';$('ptxt').textContent=m+' '+pc+'%'},done(ok,m){clearInterval(_pt);$('pbar').style.width='100%';$('pbar').style.background=ok?'var(--up)':'var(--dn)';$('ptxt').textContent=(ok?'✔ ':'✖ ')+m+' 100%';setTimeout(()=>{p.style.display='none'},ok?1200:2600)}}}
-/* ---------- storage ---------- */
-// Google Apps Script web-app URL (linked to the Google Sheet). Empty = this-device mode only.
+/* ---------- storage / secure API ---------- */
 const API_URL='https://script.google.com/macros/s/AKfycbwtaq_GwgnLvo-9a82Rfo38t1csMUl1ikBWO307z1ubQEWzTWg5lxSaaLa1x6-FecTXVg/exec';
 const addD=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
 const isFri=d=>new Date(d+'T00:00:00Z').getUTCDay()===5;
@@ -119,28 +132,25 @@ function holSet(){const s={};events.forEach(e=>{if(e.type==='Holiday')s[e.date]=
 function nonBiz(d,H){const w=new Date(d+'T00:00:00Z').getUTCDay();return w===0||w===6||(H||holSet())[d]===1}
 function wkSet(o,d){const H=holSet();let x=addD(d,1);while(nonBiz(x,H)){o[x]=o[d];x=addD(x,1)}}
 function fillWk(o){const H=holSet();Object.keys(o).sort().forEach(d=>{if(nonBiz(d,H))return;let x=addD(d,1);while(nonBiz(x,H)){if(o[x]===undefined)o[x]=o[d];x=addD(x,1)}})}
-function lsGet(){try{return JSON.parse(localStorage.getItem('mif')||'null')}catch(e){return null}}
-function lsSet(o){try{localStorage.setItem('mif',JSON.stringify(o))}catch(e){}}
-let lastErr='';function setSync(s,m){lastErr=s==='err'?(m||''):'';const e=$('sync');if(!e)return;e.title=lastErr;e.textContent=!API_URL?'● This device only':s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
-async function api(body){const o=body?{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}:{};
- let r,t;try{r=await fetch(API_URL+(body?'':(API_URL.includes('?')?'&':'?')+'t='+Date.now()),o);t=r.text?await r.text():null}catch(e){throw new Error('Request blocked or offline – check the web app access is “Anyone” and the URL is correct')}
- let j;try{j=t===null?await r.json():JSON.parse(t)}catch(e){throw new Error(/accounts\.google|sign in|authori[sz]ation/i.test(t||'')?'Google asks for sign-in/authorisation – set access to “Anyone” and run setup once in Apps Script':'The script returned a web page instead of data – deploy a New version and use the /exec URL')}
+function lsSet(){}
+let lastErr='';function setSync(s,m){lastErr=s==='err'?(m||''):'';const e=$('sync');if(!e)return;e.title=lastErr;e.textContent=s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
+function tok(){try{return sessionStorage.getItem('mift')||''}catch(e){return ''}}
+async function post(body){let r,t;try{r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});t=await r.text()}catch(e){throw new Error('Request blocked or offline – check internet and that the web app access is “Anyone”')}
+ try{return JSON.parse(t)}catch(e){throw new Error(/accounts\.google|sign in|authori[sz]ation/i.test(t||'')?'Google asks for sign-in – deploy the web app with access “Anyone”':'The script returned a web page instead of data – deploy a New version and use the /exec URL')}}
+async function api(body){const j=await post({...body,token:tok()});
+ if(j.auth===false){forceLogout();throw new Error('Session expired – please log in again')}
  if(j.error)throw new Error(j.error);return j}
-function applyState(j){rates=j.rates;plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));fillWk(rates);if(j.sync)lastSync=j.sync}
-async function load(quiet){const P=(!quiet&&API_URL)?pStart('Connecting to Google Sheet… fetching latest rates'):null;
- if(API_URL){try{applyState(await api());lsSet({rates,plans,events});setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}catch(e){P&&P.done(false,'Sheet unreachable');setSync('err',e.message);toast('Cannot reach Google Sheet: '+e.message,1)}}
- const d=lsGet();if(d&&d.rates&&Object.keys(d.rates).length){rates=d.rates;plans=d.plans||[];events=d.events||[]}else{rates={...SEED};plans=[];events=defEv()}
- fillWk(rates);setSync();return false}
-async function runSync(silent){if(!API_URL)return;const P=silent?null:pStart('Checking Al Meezan website…');
- try{const j=await api({action:'sync'});applyState(j);lsSet({rates,plans,events});setSync('cloud');if(P)P.done(true,lastSync&&lastSync.ok?lastSync.msg:'Checked – '+(lastSync&&lastSync.msg||''))}
+function applyState(j){if(j.config)setCfg(j.config);rates=j.rates||{};plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));fillWk(rates);if(j.sync)lastSync=j.sync}
+async function load(quiet){const P=quiet?null:pStart('Connecting to Google Sheet… fetching latest rates');
+ try{applyState(await api({action:'state'}));setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}
+ catch(e){P&&P.done(false,'Sheet unreachable');setSync('err',e.message);if(user&&!/log in again/.test(e.message))toast('Cannot reach Google Sheet: '+e.message,1);return false}}
+async function runSync(silent){const P=silent?null:pStart('Checking Al Meezan website…');
+ try{const j=await api({action:'sync'});applyState(j);setSync('cloud');if(P)P.done(true,lastSync&&lastSync.ok?lastSync.msg:'Checked – '+(lastSync&&lastSync.msg||''))}
  catch(e){lastSync={ok:false,msg:e.message};setSync('err',e.message);if(P)P.done(false,'Sync failed')}}
 async function syncNow(){await runSync(false);show('rates')}
-async function persist(body,localFn){const P=pStart(API_URL?'Saving to Google Sheet… recalculating':'Saving…');
- if(API_URL){try{applyState(await api(body));lsSet({rates,plans,events});setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err',e.message);toast('Not saved – '+e.message,1);return false}}
- localFn();fillWk(rates);lsSet({rates,plans,events});P.done(true,'Saved on this device');return true}
-(async()=>{fillWk(rates);await load();await runSync(true);
- try{const n=sessionStorage.getItem('mifu');if(n)enter(n)}catch(e){}
- if(API_URL)setInterval(()=>{if(user&&view!=='rates'&&view!=='plans')load(1).then(()=>show(view,1))},60000)})();
+async function persist(body){const P=pStart('Saving to Google Sheet… recalculating');
+ try{applyState(await api(body));setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err',e.message);if(user)toast('Not saved – '+e.message,1);return false}}
+setInterval(()=>{if(user&&view!=='rates'&&view!=='plans')load(1).then(ok=>{if(ok)show(view,1)})},60000);
 /* ---------- model ---------- */
 function series(){const ds=Object.keys(rates).sort();return ds.map((d,i)=>{const r=+rates[d];
  let un=2*unitsEach;plans.filter(p=>p.status==='Executed'&&p.date<=d).forEach(p=>un+=p.units);
@@ -151,18 +161,29 @@ function series(){const ds=Object.keys(rates).sort();return ds.map((d,i)=>{const
  const mv=mU*r,dv=dU*r;return{d,r,chg:i?(r-prev)/prev*100:0,mv,dv,tv:mv+dv,inv,pl:mv+dv-inv,gr:(mv+dv-inv)/inv*100,mpl:mv-mI,dpl:dv-dI,un}})}
 function last(){const s=series();return s[s.length-1]}
 /* ---------- login ---------- */
-function login(n){n=(n||$('uname').value).trim();if(!n){toast('Please enter your name',1);return}enter(n)}
-function enter(n){user=n;try{sessionStorage.setItem('mifu',n)}catch(e){}
- $('home').style.display='none';$('app').style.display='flex';$('hi').textContent='Signed in: '+n;buildMenu();show('reports')}
-function logout(){try{sessionStorage.removeItem('mifu')}catch(e){}$('app').style.display='none';$('home').style.display='flex'}
+async function login(){const pw=$('upw').value;if(!pw){toast('Enter the password',1);return}
+ const P=pStart('Signing in…');
+ try{const j=await post({action:'login',password:pw});
+  if(!j.ok){P.done(false,'Login failed');toast(j.error||'Wrong password',1);return}
+  try{sessionStorage.setItem('mift',j.token);sessionStorage.setItem('mifr',j.role)}catch(e){}
+  $('upw').value='';isAdmin=j.role==='admin';
+  if(await load(true)){P.done(true,'Welcome');enter(j.role);runSync(true).then(()=>{if(user)show(view,1)})}else P.done(false,'Cannot load data')}
+ catch(e){P.done(false,'Login failed');toast(e.message,1)}}
+function enter(role){isAdmin=role==='admin';user=isAdmin?'Admin':'Maria';
+ $('home').style.display='none';$('app').style.display='flex';$('hi').textContent='Signed in: '+user+' · v'+VERSION;
+ const rb=document.querySelector('[onclick="doReset()"]');if(rb)rb.style.display=isAdmin?'':'none';buildMenu();show('reports')}
+function forceLogout(){try{sessionStorage.removeItem('mift');sessionStorage.removeItem('mifr')}catch(e){}
+ user='';isAdmin=false;rates={};plans=[];events=[];$('out').innerHTML='';$('app').style.display='none';$('home').style.display='flex'}
+function logout(){forceLogout()}
 const MENU=[['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['statement','🧾 Bank Statement'],['rates','🏦 Daily Rates']];
 function buildMenu(){$('menu').innerHTML=MENU.map(m=>`<button data-v="${m[0]}" onclick="show('${m[0]}')">${m[1]}</button>`).join('')}
 function show(v,keep){view=v;document.querySelectorAll('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
  $('out').innerHTML=({reports,status,forecast,trend,graphs,plans:plansV,rates:ratesV,statement})[v]();if(!keep&&$('out').scrollTo)$('out').scrollTo({top:0,behavior:'smooth'})}
 const kpi=(l,v,c='')=>`<div class="kpi"><small>${l}</small><b class="${c}">${v}</b></div>`;
 /* ---------- charts ---------- */
+const fitW=()=>Math.max(480,($('out').clientWidth||900)-36),fitH=()=>Math.max(280,Math.min(560,window.innerHeight-400)),fitO=()=>({fit:1,w:fitW(),h:fitH(),ticks:Math.max(8,Math.floor(fitW()/42))});
 let _cid=0;
-function chart(sers,o={}){const W=380,H=o.h||(o.labels?236:215),L=44,R=10,T=o.leg===false?10:24,B=o.labels?66:o.cats?46:18;
+function chart(sers,o={}){const W=o.w||380,H=o.h||(o.labels?236:215),L=44,R=10,T=o.leg===false?10:24,B=o.labels?66:o.cats?46:18;
  const all=sers.flatMap(s=>s.v.filter(v=>v!==null&&v!==undefined));let mn=Math.min(...all),mx=Math.max(...all);
  if(o.bars||o.zero){mn=Math.min(mn,0);mx=Math.max(mx,0)}if(mn===mx){mn-=1;mx+=1}const pd=(mx-mn)*.07;mn-=pd;mx+=pd;if(o.nn)mn=0;
  const n=Math.max(...sers.map(s=>s.v.length)),pw=W-L-R,x=i=>L+(o.bars?(i+.5)*pw/n:(n<2?0:i*pw/(n-1))),y=v=>T+(1-(v-mn)/(mx-mn))*(H-T-B);
@@ -176,27 +197,25 @@ function chart(sers,o={}){const W=380,H=o.h||(o.labels?236:215),L=44,R=10,T=o.le
    body+=`<polyline fill="none" stroke="${s.c}" stroke-width="${s.w||1.8}" stroke-linejoin="round" stroke-dasharray="${s.dash||''}" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
    if(s.last!==false){const p=pts[pts.length-1];body+=`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${s.c}"/>`}}});
  let lx=L;const lg=sers.filter(s=>s.n).map(s=>{const t=`<text x="${lx}" y="12" style="fill:${s.c};font-weight:700">● ${s.n}</text>`;lx+=s.n.length*5.2+22;return t}).join('');
- return `<div class="cc"><div class="ch"><b>${o.t||''}</b><span class="cs">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img"><defs>${defs}</defs>${g}${body}${lg}</svg></div>`}
+ return `<div class="cc${o.fit?' fit':''}"><div class="ch"><b>${o.t||''}</b><span class="cs">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img"><defs>${defs}</defs>${g}${body}${lg}</svg></div>`}
 function donut(parts,o={}){const W=380,H=215,cx=105,cy=108,r=72,ri=46,tot=parts.reduce((a,p)=>a+p.v,0);let a0=-Math.PI/2,s='';
  const pt=(a,rr)=>[cx+rr*Math.cos(a),cy+rr*Math.sin(a)];
  parts.forEach(p=>{const fr=Math.min(p.v/tot,.9999),a1=a0+fr*2*Math.PI,l=fr>.5?1:0,A=pt(a0,r),B=pt(a1,r),C=pt(a1,ri),D=pt(a0,ri);s+=`<path d="M${A}A${r},${r} 0 ${l} 1 ${B}L${C}A${ri},${ri} 0 ${l} 0 ${D}Z" fill="${p.c}"/>`;a0=a1});
  const lg=parts.map((p,i)=>`<rect x="205" y="${74+i*34}" width="10" height="10" rx="2" fill="${p.c}"/><text x="221" y="${83+i*34}" style="font-size:11px;font-weight:700;fill:var(--ink)">${p.n}</text><text x="221" y="${96+i*34}" style="font-size:10px">${f(p.v/tot*100)}% · Rs ${f(p.v,0)}</text>`).join('');
  return `<div class="cc"><div class="ch"><b>${o.t||''}</b><span class="cs">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img">${s}<text x="${cx}" y="${cy+4}" text-anchor="middle" style="font-size:12px;font-weight:700;fill:var(--ink)">${o.center||''}</text>${lg}</svg></div>`}
 /* ---------- bank statement (Al Meezan, as at 30/09/2026) ---------- */
-const BANK={port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-09-30',printed:'2026-10-01',
- funds:[{n:'Meezan Islamic Fund (MIF)',t:'GROWTH-B',u:1155.5629,nav:157.9976,val:182576,gl:-17424,fy:-14549},{n:'Meezan Islamic Income Fund (MIIF)',t:'GROWTH-B',u:18.9207,nav:53.3381,val:1009,gl:9,fy:9}],
- tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]};
+let BANK={funds:[],tx:[],asat:'',printed:'',port:'',holder:'',amc:''};
 function statement(){const B=BANK,tv=B.funds.reduce((a,x)=>a+x.val,0),tg=B.funds.reduce((a,x)=>a+x.gl,0),tf=B.funds.reduce((a,x)=>a+x.fy,0),r=rates[B.asat],calc=r?UNITS_TOTAL*r:null,df=calc===null?null:calc-B.funds[0].val;
  const bar=B.funds.map((x,i)=>`<div style="width:${x.val/tv*100}%;background:${i?'var(--gold)':'var(--navy)'};color:#fff;padding:4px 6px;font-size:12px;white-space:nowrap;overflow:hidden">${i?'':'Equity '}${f(x.val/tv*100)}%</div>`).join('');
  const ai=[['Joint account holder','N/A'],['Zakat status','Applicable'],['Dividend option','Re-invest'],['Risk profile','Balanced'],['Meezan Funds Online','Registered'],['Hard copy statement','Not dispatched'],['ATM / Internet banking (Meezan Bank)','Not registered']];
  return `<h3>Bank Statement of Account</h3><div class="box" style="border-color:var(--gold)"><b>${B.amc}</b><div class="grid" style="margin-top:10px">${kpi('Portfolio No.',B.port)}${kpi('Account holder',B.holder)}${kpi('Balance as at',dmy(B.asat))}${kpi('Statement printed',dmy(B.printed))}</div><p class="note" style="margin:0">Account is in Maria’s name; the workbook splits the investment 50/50 between Maria and Maeda.</p></div>
  <div class="box"><b>Balance summary</b><div class="tw" style="margin-top:8px"><table><tr><th>Fund</th><th>Units type</th><th>Units</th><th>NAV (Rs)</th><th>Value (Rs)</th><th>Gain/(Loss) Rs</th><th>FYTD Rs</th></tr>${B.funds.map(x=>`<tr><td>${x.n}</td><td>${x.t}</td><td>${f(x.u,4)}</td><td>${f(x.nav,4)}</td><td>${f(x.val,0)}</td><td class="${cl(x.gl)}">${sg(x.gl).replace(/\.00$/,'')}</td><td class="${cl(x.fy)}">${sg(x.fy).replace(/\.00$/,'')}</td></tr>`).join('')}<tr style="font-weight:700"><td>Total values</td><td></td><td></td><td></td><td>${f(tv,0)}</td><td class="${cl(tg)}">${sg(tg).replace(/\.00$/,'')}</td><td class="${cl(tf)}">${sg(tf).replace(/\.00$/,'')}</td></tr></table></div>
  <p style="margin:12px 0 4px"><b>Allocation</b> <span class="note">Equity ${f(B.funds[0].val/tv*100)}% · Income ${f(B.funds[1].val/tv*100)}%</span></p><div style="display:flex;border:1.5px solid var(--brd);border-radius:6px;overflow:hidden">${bar}</div></div>
- <div class="box"><b>Reconciliation – bank vs app (${dmy(B.asat)})</b><div class="grid" style="margin-top:10px">${kpi('Bank value – MIF','Rs '+f(B.funds[0].val,0))}${kpi('App value (units × NAV)',calc===null?'no rate for date':'Rs '+f(calc))}${kpi('Difference',df===null?'–':sg(df),df!==null&&Math.abs(df)<1?'up':'dn')}${kpi('Status',df===null?'–':Math.abs(df)<1?'✔ Reconciled':'Check rates',df!==null&&Math.abs(df)<1?'up':'dn')}</div><p class="note" style="margin:0">Units (1,155.5629) are taken from the bank statement, so partner values now match the bank. Gain/Loss −17,424 = value 182,576 − invested 200,000.</p></div>
- <div class="box"><b>Summary of purchases &amp; withdrawals</b> <span class="note">01/07/2026 to 30/09/2026</span><div class="grid" style="margin-top:10px">${kpi('Total purchases','Rs 1,000')}${kpi('Total withdrawals','Rs 0')}</div>
- <div class="tw"><table><tr><th>Date</th><th>Transaction</th><th>Inflow (Rs)</th><th>Outflow (Rs)</th><th>NAV (Rs)</th><th>Units</th></tr>${B.tx.map(t=>`<tr><td>${dmy(t[0])}</td><td style="text-align:left">${t[1]}</td><td>${f(t[2],0)}</td><td>${f(t[3],0)}</td><td>${t[4]}</td><td>${t[5]}</td></tr>`).join('')}</table></div><p class="note">MIF unit balance 1,155.5629 (no transactions in the period). MIIF opening 0.0000 → closing 18.9207 units.</p></div>
+ <div class="box"><b>Reconciliation – bank vs app (${dmy(B.asat)})</b><div class="grid" style="margin-top:10px">${kpi('Bank value – MIF','Rs '+f(B.funds[0].val,0))}${kpi('App value (units × NAV)',calc===null?'no rate for date':'Rs '+f(calc))}${kpi('Difference',df===null?'–':sg(df),df!==null&&Math.abs(df)<1?'up':'dn')}${kpi('Status',df===null?'–':Math.abs(df)<1?'✔ Reconciled':'Check rates',df!==null&&Math.abs(df)<1?'up':'dn')}</div><p class="note" style="margin:0">Units (${f(UNITS_TOTAL,4)}) are taken from the bank statement, so partner values match the bank. Gain/Loss ${sg(B.funds[0].gl)} = value ${f(B.funds[0].val,0)} − invested ${f(2*BASE.invest,0)}.</p></div>
+ <div class="box"><b>Summary of purchases &amp; withdrawals</b> <span class="note">01/07/2026 to 30/09/2026</span><div class="grid" style="margin-top:10px">${kpi('Total purchases','Rs '+f(B.tx.reduce((a,t)=>a+t[2],0),0))}${kpi('Total withdrawals','Rs 0')}</div>
+ <div class="tw"><table><tr><th>Date</th><th>Transaction</th><th>Inflow (Rs)</th><th>Outflow (Rs)</th><th>NAV (Rs)</th><th>Units</th></tr>${B.tx.map(t=>`<tr><td>${dmy(t[0])}</td><td style="text-align:left">${t[1]}</td><td>${f(t[2],0)}</td><td>${f(t[3],0)}</td><td>${t[4]}</td><td>${t[5]}</td></tr>`).join('')}</table></div><p class="note">MIF unit balance ${f(B.funds[0].u,4)} (no transactions in the period). MIIF opening 0.0000 → closing ${f(B.funds[1].u,4)} units.</p></div>
  <div class="box"><b>Account information</b><div class="tw" style="margin-top:8px"><table>${ai.map(x=>`<tr><td>${x[0]}</td><td style="text-align:left">${x[1]}</td></tr>`).join('')}</table></div></div>
- <p class="note">MIIF (Rs 1,009) is held in the same portfolio but is not part of the Maria/Maeda MIF reports above. Statement is system generated by Al Meezan; keep the original for your records.</p>`}
+ <p class="note">MIIF (Rs ${f(B.funds[1].val,0)}) is held in the same portfolio but is not part of the Maria/Maeda MIF reports above. Statement is system generated by Al Meezan; keep the original for your records.</p>`}
 /* ---------- views ---------- */
 function reports(){const s=series(),L=s[s.length-1],best=s.slice(1).reduce((a,b)=>b.chg>a.chg?b:a,s[1]),worst=s.slice(1).reduce((a,b)=>b.chg<a.chg?b:a,s[1]);
  const hi=s.reduce((a,b)=>b.r>a.r?b:a);
@@ -219,17 +238,17 @@ function reg(ys){const n=ys.length,xs=ys.map((_,i)=>i),mx=(n-1)/2,my=ys.reduce((
 function forecast(){const s=series(),L=s[s.length-1],N=Math.min(14,s.length),w=s.slice(-N).map(x=>x.r),R=reg(w),st=stats(s);
  const days=[7,14,30];const sc=days.map(k=>{const base=Math.max(1,R.a+R.b*(N-1+k));const lo=L.r*(1+(st.m-st.sd*Math.sqrt(k))/100),hi=L.r*(1+(st.m+st.sd*Math.sqrt(k))/100);return{k,lo:Math.min(lo,base),base,hi:Math.max(hi,base)}});
  const pl=n=>L.un*n-L.inv;
- const pts=[...w,...Array.from({length:30},(_,i)=>Math.max(1,R.a+R.b*(N+i)))];
+ const fut=Array.from({length:30},(_,i)=>Math.max(1,R.a+R.b*(N+i))),fd=Array.from({length:30},(_,i)=>addD(L.d,i+1)),lab=[...s.slice(-N).map(x=>x.d),...fd];
  return `<h3>Forecasting</h3><div class="box"><b>Projection from last ${N} days (linear trend)</b><div class="grid" style="margin-top:10px">${kpi('Trend slope / day',sg(R.b)+' NAV',cl(R.b))}${kpi('Avg daily change',sg(st.m)+'%',cl(st.m))}${kpi('Daily volatility',f(st.sd)+'%')}</div>
  <div class="tw"><table><tr><th>Horizon</th><th>Low NAV</th><th>Base NAV</th><th>High NAV</th><th>Base value</th><th>Base gain/loss</th><th>Low gain/loss</th><th>High gain/loss</th></tr>
  ${sc.map(x=>`<tr><td>+${x.k} days</td><td>${f(x.lo,4)}</td><td>${f(x.base,4)}</td><td>${f(x.hi,4)}</td><td>${f(L.un*x.base)}</td><td class="${cl(pl(x.base))}">${sg(pl(x.base))}</td><td class="${cl(pl(x.lo))}">${sg(pl(x.lo))}</td><td class="${cl(pl(x.hi))}">${sg(pl(x.hi))}</td></tr>`).join('')}</table></div></div>
- ${chart([{v:pts,c:'#c9a227',n:'Actual + projected'}],{t:'NAV projection (next 30 days)',d:1})}
+ ${chart([{v:[...w,...fut.map(()=>null)],c:'#1d6fd1',n:'Actual'},{v:[...w.map(()=>null).slice(0,N-1),w[N-1],...fut],c:'#c9a227',n:'Projected',dash:'5 3'}],{labels:lab,t:'NAV projection (next 30 days)',d:1,...fitO()})}
  <p class="note">A statistical projection of past NAV only — not financial advice. Mutual fund prices can fall as well as rise.</p>`}
 function ma(v,k){return v.map((_,i)=>{const a=v.slice(Math.max(0,i-k+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length})}
 function trend(){const s=series(),r=s.map(x=>x.r),st=stats(s),L=s[s.length-1];const d7=s.length>7?(L.r-s[s.length-8].r)/s[s.length-8].r*100:0,d30=(L.r-s[0].r)/s[0].r*100;
  const wk=[];for(let i=0;i<s.length;i+=7){const g=s.slice(i,i+7);wk.push({a:g[0].d,b:g[g.length-1].d,o:g[0].r,c:g[g.length-1].r})}
  return `<h3>Trend</h3><div class="grid">${kpi('Last 7 days',sg(d7)+'%',cl(d7))}${kpi('Since first rate',sg(d30)+'%',cl(d30))}${kpi('Up / Down / Flat days',st.up+' / '+st.dn+' / '+st.flat)}${kpi('Direction',L.r>ma(r,7).pop()?'Above 7-day avg ▲':'Below 7-day avg ▼',L.r>ma(r,7).pop()?'up':'dn')}</div>
- ${chart([{v:r,c:'#1d6fd1',n:'NAV'},{v:ma(r,3),c:'#c9a227',n:'3-day avg'},{v:ma(r,7),c:'#0a8f5b',n:'7-day avg'}],{labels:s.map(x=>x.d),t:'NAV with moving averages',d:1})}
+ ${chart([{v:r,c:'#1d6fd1',n:'NAV'},{v:ma(r,3),c:'#c9a227',n:'3-day avg'},{v:ma(r,7),c:'#0a8f5b',n:'7-day avg'}],{labels:s.map(x=>x.d),t:'NAV with moving averages',d:1,...fitO()})}
  <div class="tw"><table><tr><th>Week</th><th>Open NAV</th><th>Close NAV</th><th>Change %</th></tr>${wk.map(x=>`<tr><td>${dmy(x.a)} → ${dmy(x.b)}</td><td>${f(x.o,4)}</td><td>${f(x.c,4)}</td><td class="${cl(x.c-x.o)}">${sg((x.c-x.o)/x.o*100)}</td></tr>`).join('')}</table></div>`}
 function graphs(){const s=series(),lb=s.map(x=>x.d),r=s.map(x=>x.r),L=s[s.length-1];
  let pk=-1/0;const dd=r.map(v=>{pk=Math.max(pk,v);return(v/pk-1)*100});
@@ -260,12 +279,12 @@ function ratesV(){const H=holSet(),ds=Object.keys(rates).sort(),first=ds[0],ld=d
  for(let d=CAL_START;d<=end;d=addD(d,1)){const t=tag(d),r=rates[d],w=new Date(d+'T00:00:00Z').getUTCDay();
   const chg=(r!==undefined&&prev!==null)?(r-prev)/prev*100:null;if(r!==undefined)prev=r;
   if(t[0]==='Missing'&&d<=td)miss.push(d);
-  rows.push(`<tr><td>${dmy(d)}</td><td>${DAYN[w]}</td><td class="r">${r!==undefined?f(r,4):'—'}</td><td class="r ${chg===null?'':cl(chg)}">${chg===null?'':sg(chg)+'%'}</td><td><span class="tg ${t[1]}">${t[0]}</span></td><td>${t[1]==='tg-r'?`<button class="mini" onclick="delRate('${d}')">Del</button>`:''}</td></tr>`)}
+  rows.push(`<tr><td>${dmy(d)}</td><td>${DAYN[w]}</td><td class="r">${r!==undefined?f(r,4):'—'}</td><td class="r ${chg===null?'':cl(chg)}">${chg===null?'':sg(chg)+'%'}</td><td><span class="tg ${t[1]}">${t[0]}</span></td><td>${isAdmin&&t[1]==='tg-r'?`<button class="mini" onclick="delRate('${d}')">Del</button>`:''}</td></tr>`)}
  const lr=rates[ld],pr=rates[pd],lt=tag(ld),r7=ds.slice(-7).reduce((a,d)=>a+rates[d],0)/Math.min(7,ds.length);
  const sy=lastSync,syTxt=!API_URL?'Connect the Google Sheet to enable automatic bank-website updates':lastErr?'⚠ Cannot reach Google Sheet: '+esc(lastErr):!sy?'Not checked yet – tap Check now':(sy.ok?'✓ ':'⚠ ')+esc(sy.msg);
  const ev=[...events].sort((a,b)=>a.date<b.date?-1:1);
  const notices=['Report any error or discrepancy to the bank within 7 working days of receiving a statement.','Accounts with no activity for 3 years are marked “Dormant”.','Sales load: up to 3% of NAV (direct or third-party portals); up to 1.5% via the AMC’s own online portal.','Dividend option on this account: Re-invest.','Queries: info@almeezangroup.com · 0800-HALAL (42525).'];
- return `<h3>Daily Rates (from bank)</h3>
+ return `<div class="rates-wrap"><h3>Daily Rates (from bank)</h3>
  <div class="bank"><div><small>Meezan Islamic Fund · NAV</small><div class="big">${f(lr,4)}</div><div class="${cl(lr-pr)}">${sg((lr-pr)/pr*100)}% vs ${dmy(pd)}</div></div>
  <div><small>Rate date</small><b style="font-size:18px">${dmy(ld)}</b><span><span class="tg ${lt[1]}">${lt[0]}</span></span></div>
  <div><small>Today · ${dmy(td)}</small><b style="font-size:18px">${rates[td]!==undefined?f(rates[td],4):'Awaiting bank rate'}</b><span class="note">7-day avg ${f(r7,4)}</span></div>
@@ -273,7 +292,7 @@ function ratesV(){const H=holSet(),ds=Object.keys(rates).sort(),first=ds[0],ld=d
  ${miss.length?`<div class="box" style="border-color:var(--dn)"><b class="dn">${miss.length} weekday rate(s) missing</b> <span class="note">${miss.slice(0,14).map(dmy).join(', ')}${miss.length>14?' …':''} — Check now, or paste them in “Add many rates”. Weekends and holidays fill automatically from the day before.</span></div>`:`<div class="box" style="border-color:var(--up)"><b class="up">History complete</b> <span class="note">no weekday rates missing from ${dmy(first)} to today.</span></div>`}
  <div class="rg2"><div class="box hist" style="padding:0;overflow:hidden"><div style="padding:10px 14px;border-bottom:1.5px solid var(--brd)"><b>Rate history</b> <span class="note">since ${dmy(CAL_START)} · ${rows.length} days · newest first</span></div>
  <div class="tw" style="border:0;border-radius:0"><table><tr><th>Date</th><th>Day</th><th class="r">NAV rate</th><th class="r">Change</th><th>Status</th><th></th></tr>${rows.reverse().join('')}</table></div></div>
- <div>
+ <div class="rates-side">
  <div class="box"><b>Add a rate</b><div class="row" style="margin-top:8px"><div><label>Date</label><input id="rd" value="${dmy(addD(ld,1))}" placeholder="dd/mm/yyyy" class="dt" maxlength="10" inputmode="numeric" autocomplete="off"></div><div><label>NAV rate</label><input type="number" step="0.0001" id="rv" placeholder="000.0000"></div></div><div style="margin-top:8px"><button class="btn gold" onclick="addRate()">Add / Update rate</button></div><p class="note" style="margin-bottom:0">Saturday, Sunday and bank holidays take the previous business day’s rate automatically.</p></div>
  <div class="box"><b>Add many rates</b><textarea id="rb" rows="3" style="width:100%;margin-top:8px;padding:9px;border:1.5px solid var(--brd);border-radius:8px;background:var(--card);color:var(--ink)" placeholder="dd/mm/yyyy, 000.0000 (one per line)"></textarea><div style="margin-top:8px"><button class="btn gold" onclick="addBulk()">Add all</button></div></div>
  <div class="box"><b>Events &amp; bank holidays</b>
@@ -281,7 +300,7 @@ function ratesV(){const H=holSet(),ds=Object.keys(rates).sort(),first=ds[0],ld=d
  <div class="tw" style="max-height:26vh"><table><tr><th>Date</th><th>Event</th><th>Del</th></tr>${ev.length?ev.map(e=>`<tr><td>${dmy(e.date)}</td><td style="text-align:left;white-space:normal">${e.type==='Holiday'?'<span class="tg tg-h">Holiday</span> ':''}${esc(e.title)}${e.note?'<div class="note">'+esc(e.note)+'</div>':''}</td><td><button class="mini" onclick="delEvent(${events.indexOf(e)})">Del</button></td></tr>`).join(''):'<tr><td colspan="3" style="text-align:center">No events yet</td></tr>'}</table></div>
  <p class="note" style="margin-bottom:0">Add holidays here: that day takes the rate of the day before.</p></div>
  <div class="box"><b>Bank notices &amp; information</b><ul style="margin:8px 0 0;padding-left:18px">${notices.map(t=>`<li class="note" style="margin:4px 0">${t}</li>`).join('')}</ul><p class="note" style="margin-bottom:0">From the Al Meezan statement dated ${dmy(BANK.printed)}.</p></div>
- </div></div>`}
+ </div></div></div>`}
 async function addEvent(){const d=pIso($('ed').value),t=$('et').value.trim(),ty=$('ey').value==='Holiday'?'Holiday':'Event';if(!d||!t){toast('Enter a date (dd/mm/yyyy) and a title',1);return}
  const ne=[...events,{date:d,title:t,note:$('en').value.trim(),type:ty}];
  if(await persist({action:'saveEvents',events:ne},()=>{events=ne})){if(ty==='Holiday'&&API_URL)await persist({action:'audit'},()=>{});show('rates')}}
@@ -309,5 +328,9 @@ async function delPlan(i){const np=plans.filter((_,k)=>k!==i);if(await persist({
 /* ---------- controls ---------- */
 async function doUpdate(){const ok=await load();await runSync(false);toast(API_URL?(ok?'Updated – latest data from Google Sheet':'Sheet unreachable'):'Saved on this device',API_URL&&!ok);show(view)}
 async function doRefresh(){await load();await runSync(false);toast('Refreshed');show(view)}
-async function doReset(){if(!confirm('Reset to the original Excel data? Added rates and plans will be removed'+(API_URL?' from the Google Sheet too.':'.')))return;detail=false;if(await persist({action:'reset'},()=>{rates={...SEED};plans=[]})){toast('Reset to original data');show('reports')}}
+async function doReset(){if(!confirm('Reset to the original Excel data? Added rates and plans will be removed'+(API_URL?' from the Google Sheet too.':'.')))return;detail=false;if(await persist({action:'reset'},()=>{})){toast('Reset to original data');show('reports')}}
+try{localStorage.removeItem('mif')}catch(e){}
+window.addEventListener('resize',()=>{clearTimeout(window._rz);window._rz=setTimeout(()=>{if(user&&(view==='trend'||view==='forecast'))show(view,1)},200)});
+(async()=>{if(!tok())return;let role='user';try{role=sessionStorage.getItem('mifr')||'user'}catch(e){}
+ if(await load(true)){enter(role);runSync(true).then(()=>{if(user)show(view,1)})}})();
 </script></body></html>
