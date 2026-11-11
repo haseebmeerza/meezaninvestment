@@ -104,7 +104,7 @@ if(document.addEventListener)document.addEventListener('input',e=>{const t=e.tar
 const f=(n,d=2)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sg=n=>(n>=0?'+':'')+f(n);const cl=n=>n>=0?'up':'dn';
 const UNITS_TOTAL=1155.5629,unitsEach=UNITS_TOTAL/2,netEach=BASE.invest-BASE.charges-BASE.tax;BASE.buyNAV=netEach/unitsEach; // units per bank statement (30-Sep-2026), split 50/50
-function toast(m,bad){const t=$('toast');t.textContent=m;t.style.background=bad?'#c8352f':'#0a8f5b';t.style.display='block';setTimeout(()=>t.style.display='none',2600)}
+function toast(m,bad){const t=$('toast');t.textContent=m;t.style.background=bad?'#c8352f':'#0a8f5b';t.style.display='block';setTimeout(()=>t.style.display='none',bad?8000:2600)}
 /* ---------- progress ---------- */
 let _pt=0;
 function pStart(msg){const p=$('prog');p.style.display='block';let v=8;$('pbar').style.width=v+'%';$('pbar').style.background='';$('ptxt').textContent=msg+' '+v+'%';clearInterval(_pt);_pt=setInterval(()=>{v+=(92-v)*.07;$('pbar').style.width=v+'%';$('ptxt').textContent=msg+' '+Math.round(v)+'%'},180);
@@ -121,20 +121,22 @@ function wkSet(o,d){const H=holSet();let x=addD(d,1);while(nonBiz(x,H)){o[x]=o[d
 function fillWk(o){const H=holSet();Object.keys(o).sort().forEach(d=>{if(nonBiz(d,H))return;let x=addD(d,1);while(nonBiz(x,H)){if(o[x]===undefined)o[x]=o[d];x=addD(x,1)}})}
 function lsGet(){try{return JSON.parse(localStorage.getItem('mif')||'null')}catch(e){return null}}
 function lsSet(o){try{localStorage.setItem('mif',JSON.stringify(o))}catch(e){}}
-function setSync(s){const e=$('sync');if(!e)return;e.textContent=!API_URL?'● This device only':s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
+let lastErr='';function setSync(s,m){lastErr=s==='err'?(m||''):'';const e=$('sync');if(!e)return;e.title=lastErr;e.textContent=!API_URL?'● This device only':s==='cloud'?'● Online – Google Sheet':'● Sheet unreachable';e.style.color=s==='cloud'?'#6be3a5':'#ffb4ae'}
 async function api(body){const o=body?{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)}:{};
- const r=await fetch(API_URL+(body?'':(API_URL.includes('?')?'&':'?')+'t='+Date.now()),o);const j=await r.json();if(j.error)throw new Error(j.error);return j}
+ let r,t;try{r=await fetch(API_URL+(body?'':(API_URL.includes('?')?'&':'?')+'t='+Date.now()),o);t=r.text?await r.text():null}catch(e){throw new Error('Request blocked or offline – check the web app access is “Anyone” and the URL is correct')}
+ let j;try{j=t===null?await r.json():JSON.parse(t)}catch(e){throw new Error(/accounts\.google|sign in|authori[sz]ation/i.test(t||'')?'Google asks for sign-in/authorisation – set access to “Anyone” and run setup once in Apps Script':'The script returned a web page instead of data – deploy a New version and use the /exec URL')}
+ if(j.error)throw new Error(j.error);return j}
 function applyState(j){rates=j.rates;plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));fillWk(rates);if(j.sync)lastSync=j.sync}
 async function load(quiet){const P=(!quiet&&API_URL)?pStart('Connecting to Google Sheet… fetching latest rates'):null;
- if(API_URL){try{applyState(await api());lsSet({rates,plans,events});setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}catch(e){P&&P.done(false,'Sheet unreachable');setSync('err');toast('Cannot reach Google Sheet – showing last saved copy',1)}}
+ if(API_URL){try{applyState(await api());lsSet({rates,plans,events});setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}catch(e){P&&P.done(false,'Sheet unreachable');setSync('err',e.message);toast('Cannot reach Google Sheet: '+e.message,1)}}
  const d=lsGet();if(d&&d.rates&&Object.keys(d.rates).length){rates=d.rates;plans=d.plans||[];events=d.events||[]}else{rates={...SEED};plans=[];events=defEv()}
  fillWk(rates);setSync();return false}
 async function runSync(silent){if(!API_URL)return;const P=silent?null:pStart('Checking Al Meezan website…');
  try{const j=await api({action:'sync'});applyState(j);lsSet({rates,plans,events});setSync('cloud');if(P)P.done(true,lastSync&&lastSync.ok?lastSync.msg:'Checked – '+(lastSync&&lastSync.msg||''))}
- catch(e){lastSync={ok:false,msg:e.message};setSync('err');if(P)P.done(false,'Sync failed')}}
+ catch(e){lastSync={ok:false,msg:e.message};setSync('err',e.message);if(P)P.done(false,'Sync failed')}}
 async function syncNow(){await runSync(false);show('rates')}
 async function persist(body,localFn){const P=pStart(API_URL?'Saving to Google Sheet… recalculating':'Saving…');
- if(API_URL){try{applyState(await api(body));lsSet({rates,plans,events});setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err');toast('Not saved – Google Sheet unreachable ('+e.message+')',1);return false}}
+ if(API_URL){try{applyState(await api(body));lsSet({rates,plans,events});setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err',e.message);toast('Not saved – '+e.message,1);return false}}
  localFn();fillWk(rates);lsSet({rates,plans,events});P.done(true,'Saved on this device');return true}
 (async()=>{fillWk(rates);await load();await runSync(true);
  try{const n=sessionStorage.getItem('mifu');if(n)enter(n)}catch(e){}
@@ -260,7 +262,7 @@ function ratesV(){const H=holSet(),ds=Object.keys(rates).sort(),first=ds[0],ld=d
   if(t[0]==='Missing'&&d<=td)miss.push(d);
   rows.push(`<tr><td>${dmy(d)}</td><td>${DAYN[w]}</td><td class="r">${r!==undefined?f(r,4):'—'}</td><td class="r ${chg===null?'':cl(chg)}">${chg===null?'':sg(chg)+'%'}</td><td><span class="tg ${t[1]}">${t[0]}</span></td><td>${t[1]==='tg-r'?`<button class="mini" onclick="delRate('${d}')">Del</button>`:''}</td></tr>`)}
  const lr=rates[ld],pr=rates[pd],lt=tag(ld),r7=ds.slice(-7).reduce((a,d)=>a+rates[d],0)/Math.min(7,ds.length);
- const sy=lastSync,syTxt=!API_URL?'Connect the Google Sheet to enable automatic bank-website updates':!sy?'Not checked yet – tap Check now':(sy.ok?'✓ ':'⚠ ')+esc(sy.msg);
+ const sy=lastSync,syTxt=!API_URL?'Connect the Google Sheet to enable automatic bank-website updates':lastErr?'⚠ Cannot reach Google Sheet: '+esc(lastErr):!sy?'Not checked yet – tap Check now':(sy.ok?'✓ ':'⚠ ')+esc(sy.msg);
  const ev=[...events].sort((a,b)=>a.date<b.date?-1:1);
  const notices=['Report any error or discrepancy to the bank within 7 working days of receiving a statement.','Accounts with no activity for 3 years are marked “Dormant”.','Sales load: up to 3% of NAV (direct or third-party portals); up to 1.5% via the AMC’s own online portal.','Dividend option on this account: Re-invest.','Queries: info@almeezangroup.com · 0800-HALAL (42525).'];
  return `<h3>Daily Rates (from bank)</h3>
