@@ -111,7 +111,7 @@ function pStart(msg){const p=$('prog');p.style.display='block';let v=8;$('pbar')
  return{set(pc,m){clearInterval(_pt);v=pc;$('pbar').style.width=pc+'%';$('ptxt').textContent=m+' '+pc+'%'},done(ok,m){clearInterval(_pt);$('pbar').style.width='100%';$('pbar').style.background=ok?'var(--up)':'var(--dn)';$('ptxt').textContent=(ok?'✔ ':'✖ ')+m+' 100%';setTimeout(()=>{p.style.display='none'},ok?1200:2600)}}}
 /* ---------- storage ---------- */
 // Google Apps Script web-app URL (linked to the Google Sheet). Empty = this-device mode only.
-const API_URL='https://script.google.com/macros/s/AKfycbzCf-lMnsb133pzun65jtYE27sGg5rbZIzZ0S8FLzUMyMA9DusWJQEnPQjYrB2NSOsvcA/exec';
+const API_URL='https://script.google.com/macros/s/AKfycbwtaq_GwgnLvo-9a82Rfo38t1csMUl1ikBWO307z1ubQEWzTWg5lxSaaLa1x6-FecTXVg/exec';
 const addD=(d,k)=>{const t=new Date(d+'T00:00:00Z');t.setUTCDate(t.getUTCDate()+k);return t.toISOString().slice(0,10)};
 const isFri=d=>new Date(d+'T00:00:00Z').getUTCDay()===5;
 function defEv(){return [{date:'2026-08-14',title:'Independence Day',note:'Bank holiday',type:'Holiday'},{date:'2026-11-09',title:'Iqbal Day',note:'Bank holiday',type:'Holiday'},{date:'2026-12-25',title:'Quaid-e-Azam Day / Christmas',note:'Bank holiday',type:'Holiday'}]}
