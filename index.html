@@ -83,13 +83,27 @@ svg text{fill:var(--mut);font-size:11px}
 #foot{flex:none;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:6px 16px;background:var(--side);color:#cfd9ea;font-size:12px;border-top:2px solid var(--gold)}
 .fab{bottom:calc(46px + env(safe-area-inset-bottom,0px))}
 .cc.fit{max-width:none}.cc.fit svg text{font-size:11px}
+
+.cs{white-space:nowrap}.cc svg{touch-action:pan-y}
+.cg2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;margin-bottom:12px}.cg2 .cc,.cg3 .cc{max-width:none}
+.cg3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:12px}
+.dhead{background:linear-gradient(120deg,#0f2a52,#1d4a86 60%,#c9a227);color:#fff;border-radius:14px;padding:16px 18px;display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}.dhead h3{color:#fff!important}.dhead small{color:#dbeafe}
+.dh{background:linear-gradient(120deg,#0f2a52,#1d4a86 70%);color:#fff;border-radius:10px;padding:9px 14px;margin:18px 0 10px;font-size:13.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;border-left:5px solid var(--gold)}.dh small{font-weight:400;text-transform:none;letter-spacing:0;color:#dbeafe}
+.dk{text-align:center}.dk small{font-weight:800;background:rgba(29,111,209,.14);border-radius:6px;padding:3px 6px;margin-bottom:4px}
+.chip{border:1.5px solid var(--brd);background:var(--bg);color:var(--ink);border-radius:20px;padding:5px 12px;cursor:pointer;font-size:12px}.chip:hover{filter:brightness(.95)}.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}.chip.dis{opacity:.45;border-style:dashed;cursor:not-allowed}
+.mtg{display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:10px}
+.mt0,.mt1{border:1.5px solid var(--brd);border-radius:12px;padding:8px 10px;background:var(--bg)}.mt0{border-style:dashed;opacity:.6}.mt1{cursor:pointer;border-left-width:5px;transition:transform .15s}.mt1:hover{transform:translateY(-2px)}.mt1.up{border-left-color:var(--up)}.mt1.dn{border-left-color:var(--dn)}.mt1.sel{outline:2px solid var(--gold)}.mt1 .v{font-size:17px;font-weight:700}
+.rcg{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}.rc{border:1.5px solid var(--brd);border-radius:12px;padding:10px 14px;background:var(--bg)}.rc h4{margin:0 0 6px;color:var(--navy)}.rc ul{margin:0;padding-left:18px}.rc li{margin:5px 0;font-size:13.5px}.rc.disc{border-left:5px solid var(--dn)}
+.tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;background:rgba(29,111,209,.14);border:1px solid var(--brd);margin-right:4px;font-weight:700}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]) .rc h4{color:var(--gold)}}
+@media print{.banner,.menu,#foot,.fab,.noprint,#toast,#prog{display:none!important}#app{height:auto!important;overflow:visible!important}.layout{display:block!important;overflow:visible!important}.main{overflow:visible!important;height:auto!important;border:0}.tw{max-height:none!important;overflow:visible!important}body{background:#fff}}
 </style></head><body>
 
 <section id="home"><div class="login">
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.0.0 · Private – authorised users only.</p></div>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.1.0 · Private – authorised users only.</p></div>
  <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
  <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
@@ -100,12 +114,12 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
- <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.0.0</span></footer>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.1.0</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.0.0';let isAdmin=false;
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.1.0';let isAdmin=false;
 let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -177,27 +191,45 @@ function forceLogout(){try{sessionStorage.removeItem('mift');sessionStorage.remo
 function logout(){forceLogout()}
 const MENU=[['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['statement','🧾 Bank Statement'],['rates','🏦 Daily Rates']];
 function buildMenu(){$('menu').innerHTML=MENU.map(m=>`<button data-v="${m[0]}" onclick="show('${m[0]}')">${m[1]}</button>`).join('')}
-function show(v,keep){view=v;document.querySelectorAll('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
+function show(v,keep){CH={};view=v;document.querySelectorAll('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
  $('out').innerHTML=({reports,status,forecast,trend,graphs,plans:plansV,rates:ratesV,statement})[v]();if(!keep&&$('out').scrollTo)$('out').scrollTo({top:0,behavior:'smooth'})}
 const kpi=(l,v,c='')=>`<div class="kpi"><small>${l}</small><b class="${c}">${v}</b></div>`;
 /* ---------- charts ---------- */
 const fitW=()=>Math.max(480,($('out').clientWidth||900)-36),fitH=()=>Math.max(280,Math.min(560,window.innerHeight-400)),fitO=()=>({fit:1,w:fitW(),h:fitH(),ticks:Math.max(8,Math.floor(fitW()/42))});
-let _cid=0;
-function chart(sers,o={}){const W=o.w||380,H=o.h||(o.labels?236:215),L=44,R=10,T=o.leg===false?10:24,B=o.labels?66:o.cats?46:18;
+let _cid=0,CH={},xhOn=false;
+function xhMove(svg,cx){const c=CH[svg.dataset.ch];if(!c)return;const r=svg.getBoundingClientRect();if(!r.width)return;const px=(cx-r.left)*c.W/r.width;let bi=-1,bd=1e9;c.xs.forEach((x,i)=>{if(c.pv[i]===null)return;const d=Math.abs(x-px);if(d<bd){bd=d;bi=i}});if(bi<0)return;
+ const X=c.xs[bi],v=c.pv[bi],Y=c.y(v),g=svg.querySelector('.xh'),q=k=>g.querySelector(k),tx=String(c.lab[bi]||''),ty=f(v,c.hd),wx=tx.length*5.8+12,wy=ty.length*5.8+10,xx=Math.min(Math.max(X-wx/2,c.L),c.W-c.R-wx);
+ g.style.display='';xhOn=true;const at=(k,a,b)=>q(k).setAttribute(a,b);
+ at('.xv','x1',X);at('.xv','x2',X);at('.xz','y1',Y);at('.xz','y2',Y);at('.xc','cx',X);at('.xc','cy',Y);
+ at('.xtx','x',xx);at('.xtx','width',wx);at('.xtt','x',xx+wx/2);q('.xtt').textContent=tx;
+ at('.xty','x',c.L-wy);at('.xty','y',Y-8);at('.xty','width',wy);at('.xyt','x',c.L-wy/2);at('.xyt','y',Y+3.5);q('.xyt').textContent=ty;
+ const cs=svg.closest('.cc').querySelector('.cs');if(cs)cs.textContent=tx+' · '+c.sers.filter(k=>k.v[bi]!==null&&k.v[bi]!==undefined&&(k.n||c.sers.length===1)).map(k=>(k.n?k.n+' ':'')+f(k.v[bi],c.hd)).join(' · ')}
+function xhHide(){if(!xhOn)return;xhOn=false;document.querySelectorAll('.xh').forEach(g=>g.style.display='none');document.querySelectorAll('.cs[data-d]').forEach(e=>e.textContent=e.dataset.d)}
+const xhEv=(e,cx)=>{const t=e.target,sv=t&&t.closest?t.closest('svg[data-ch]'):null;if(sv)xhMove(sv,cx);else xhHide()};
+document.addEventListener('mousemove',e=>xhEv(e,e.clientX));
+document.addEventListener('touchstart',e=>{if(e.touches[0])xhEv(e,e.touches[0].clientX)},{passive:true});
+document.addEventListener('touchmove',e=>{if(e.touches[0])xhEv(e,e.touches[0].clientX)},{passive:true});
+document.addEventListener('touchend',()=>setTimeout(xhHide,1500));
+function chart(sers,o={}){const W=o.w||380,H=o.h||(o.labels?236:215),L0=44,R=10,T=o.leg===false?10:24,B=o.marks?34:o.labels?66:o.cats?46:18;
  const all=sers.flatMap(s=>s.v.filter(v=>v!==null&&v!==undefined));let mn=Math.min(...all),mx=Math.max(...all);
  if(o.bars||o.zero){mn=Math.min(mn,0);mx=Math.max(mx,0)}if(mn===mx){mn-=1;mx+=1}const pd=(mx-mn)*.07;mn-=pd;mx+=pd;if(o.nn)mn=0;
- const n=Math.max(...sers.map(s=>s.v.length)),pw=W-L-R,x=i=>L+(o.bars?(i+.5)*pw/n:(n<2?0:i*pw/(n-1))),y=v=>T+(1-(v-mn)/(mx-mn))*(H-T-B);
+ const L=Math.max(L0,f(Math.max(Math.abs(mn),Math.abs(mx)),o.hd??Math.max(o.d??1,2)).length*5.6+16);const n=Math.max(...sers.map(s=>s.v.length)),pw=W-L-R,x=i=>L+(o.bars?(i+.5)*pw/n:(n<2?0:i*pw/(n-1))),y=v=>T+(1-(v-mn)/(mx-mn))*(H-T-B);
  let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4;g+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--brd)" stroke-width=".6" ${k?'stroke-dasharray="2 3"':''}/><text x="${L-4}" y="${y(v)+3}" text-anchor="end">${f(v,o.d??1)}</text>`}
  const lab=o.cats||(o.labels||[]).map(dmy),st=Math.max(1,Math.ceil(n/(o.ticks||13)));
- lab.forEach((t,i)=>{if(i%st===0||(i===n-1&&(n-1)%st>=Math.ceil(st/2)))g+=`<line x1="${x(i)}" x2="${x(i)}" y1="${H-B}" y2="${H-B+3}" stroke="var(--mut)" stroke-width=".6"/><text transform="translate(${x(i)+3},${H-B+6}) rotate(-90)" text-anchor="end">${t}</text>`});
+ if(!o.marks)lab.forEach((t,i)=>{if(i%st===0||(i===n-1&&(n-1)%st>=Math.ceil(st/2)))g+=`<line x1="${x(i)}" x2="${x(i)}" y1="${H-B}" y2="${H-B+3}" stroke="var(--mut)" stroke-width=".6"/><text transform="translate(${x(i)+3},${H-B+6}) rotate(-90)" text-anchor="end">${t}</text>`});
  const base=o.zero?y(0):H-B;let body='',defs='';
- sers.forEach(s=>{if(o.bars){const bw=Math.max(2,pw/n*.7);s.v.forEach((v,i)=>{if(v===null)return;const yy=y(v),z=y(0);body+=`<rect x="${x(i)-bw/2}" y="${Math.min(z,yy)}" width="${bw}" height="${Math.max(.8,Math.abs(z-yy))}" rx="1" fill="${o.color||(v>=0?'#0a8f5b':'#c8352f')}"/>`})}
+ sers.forEach(s=>{if(o.bars){const bw=Math.max(2,pw/n*.7);s.v.forEach((v,i)=>{if(v===null)return;const yy=y(v),z=y(0);body+=`<rect x="${x(i)-bw/2}" y="${Math.min(z,yy)}" width="${bw}" height="${Math.max(.8,Math.abs(z-yy))}" rx="1" fill="${o.colors?o.colors[i]:(o.color||(v>=0?'#0a8f5b':'#c8352f'))}"/>`})}
   else{const pts=s.v.map((v,i)=>v===null?null:[x(i),y(v)]).filter(Boolean);if(!pts.length)return;
    if(s.area){const id='ga'+(++_cid),neg=o.zero&&s.v.reduce((a,v)=>a+v,0)<0;defs+=`<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${s.c}" stop-opacity="${neg?.04:.38}"/><stop offset="1" stop-color="${s.c}" stop-opacity="${neg?.38:.02}"/></linearGradient>`;body+=`<polygon fill="url(#${id})" points="${pts[0][0]},${base} ${pts.map(p=>p.join(',')).join(' ')} ${pts[pts.length-1][0]},${base}"/>`}
    body+=`<polyline fill="none" stroke="${s.c}" stroke-width="${s.w||1.8}" stroke-linejoin="round" stroke-dasharray="${s.dash||''}" points="${pts.map(p=>p.join(',')).join(' ')}"/>`;
    if(s.last!==false){const p=pts[pts.length-1];body+=`<circle cx="${p[0]}" cy="${p[1]}" r="3" fill="${s.c}"/>`}}});
+ const hd=o.hd??Math.max(o.d??1,2),cid='ch'+(++_cid),xs=Array.from({length:n},(_,i)=>x(i)),pv=Array.from({length:n},(_,i)=>{for(const q of sers){const v=q.v[i];if(v!==null&&v!==undefined)return v}return null});
+ CH[cid]={W,L,R,T,H,B,xs,pv,lab,sers,y,hd};
+ (o.marks||[]).forEach(m=>{const v=sers[m.s||0].v[m.i];if(v===null||v===undefined)return;const X=x(m.i),Y=y(v),c=m.c||'#c9a227',tx=pw/n*7<64?String(lab[m.i]).slice(0,5):String(lab[m.i]),ty=f(v,hd),wx=tx.length*5.8+12,wy=ty.length*5.8+10,xx=Math.min(Math.max(X-wx/2,L),W-R-wx);
+  body+=`<line x1="${X}" x2="${X}" y1="${Y}" y2="${H-B}" stroke="${c}" stroke-width="1.2" stroke-dasharray="3 3"/><line x1="${L}" x2="${X}" y1="${Y}" y2="${Y}" stroke="${c}" stroke-width="1.2" stroke-dasharray="3 3"/><circle cx="${X}" cy="${Y}" r="4" fill="${c}" stroke="#fff" stroke-width="1.5"/><rect x="${xx}" y="${H-B+3}" width="${wx}" height="16" rx="4" fill="${c}"/><text x="${xx+wx/2}" y="${H-B+14.5}" text-anchor="middle" style="font-size:10px;font-weight:700;fill:#fff">${tx}</text><rect x="${L-wy}" y="${Y-8}" width="${wy}" height="16" rx="4" fill="${c}"/><text x="${L-wy/2}" y="${Y+3.5}" text-anchor="middle" style="font-size:10px;font-weight:700;fill:#fff">${ty}</text>`});
+ const xh=`<rect x="${L}" y="${T}" width="${pw}" height="${H-T-B}" fill="transparent"/><g class="xh" style="display:none;pointer-events:none"><line class="xv" y1="${T}" y2="${H-B}" stroke="var(--mut)" stroke-width="1" stroke-dasharray="3 3"/><line class="xz" x1="${L}" x2="${W-R}" stroke="var(--mut)" stroke-width="1" stroke-dasharray="3 3"/><circle class="xc" r="4" fill="var(--navy)" stroke="#fff" stroke-width="1.5"/><rect class="xtx" y="${H-B+3}" height="16" rx="4" fill="var(--navy)"/><text class="xtt" y="${H-B+14.5}" text-anchor="middle" style="font-size:10px;font-weight:700;fill:#fff"></text><rect class="xty" height="16" rx="4" fill="var(--navy)"/><text class="xyt" text-anchor="middle" style="font-size:10px;font-weight:700;fill:#fff"></text></g>`;
  let lx=L;const lg=sers.filter(s=>s.n).map(s=>{const t=`<text x="${lx}" y="12" style="fill:${s.c};font-weight:700">● ${s.n}</text>`;lx+=s.n.length*5.2+22;return t}).join('');
- return `<div class="cc${o.fit?' fit':''}"><div class="ch"><b>${o.t||''}</b><span class="cs">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img"><defs>${defs}</defs>${g}${body}${lg}</svg></div>`}
+ return `<div class="cc${o.fit?' fit':''}"><div class="ch"><b>${o.t||''}</b><span class="cs" data-d="${o.sub||''}">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img" data-ch="${cid}"><defs>${defs}</defs>${g}${body}${lg}${xh}</svg></div>`}
 function donut(parts,o={}){const W=380,H=215,cx=105,cy=108,r=72,ri=46,tot=parts.reduce((a,p)=>a+p.v,0);let a0=-Math.PI/2,s='';
  const pt=(a,rr)=>[cx+rr*Math.cos(a),cy+rr*Math.sin(a)];
  parts.forEach(p=>{const fr=Math.min(p.v/tot,.9999),a1=a0+fr*2*Math.PI,l=fr>.5?1:0,A=pt(a0,r),B=pt(a1,r),C=pt(a1,ri),D=pt(a0,ri);s+=`<path d="M${A}A${r},${r} 0 ${l} 1 ${B}L${C}A${ri},${ri} 0 ${l} 0 ${D}Z" fill="${p.c}"/>`;a0=a1});
@@ -217,13 +249,13 @@ function statement(){const B=BANK,tv=B.funds.reduce((a,x)=>a+x.val,0),tg=B.funds
  <div class="box"><b>Account information</b><div class="tw" style="margin-top:8px"><table>${ai.map(x=>`<tr><td>${x[0]}</td><td style="text-align:left">${x[1]}</td></tr>`).join('')}</table></div></div>
  <p class="note">MIIF (Rs ${f(B.funds[1].val,0)}) is held in the same portfolio but is not part of the Maria/Maeda MIF reports above. Statement is system generated by Al Meezan; keep the original for your records.</p>`}
 /* ---------- views ---------- */
-function reports(){const s=series(),L=s[s.length-1],best=s.slice(1).reduce((a,b)=>b.chg>a.chg?b:a,s[1]),worst=s.slice(1).reduce((a,b)=>b.chg<a.chg?b:a,s[1]);
+function reports(){if(detail)return reportDetail();const s=series(),L=s[s.length-1],best=s.slice(1).reduce((a,b)=>b.chg>a.chg?b:a,s[1]),worst=s.slice(1).reduce((a,b)=>b.chg<a.chg?b:a,s[1]);
  const hi=s.reduce((a,b)=>b.r>a.r?b:a);
  let h=`<h3>Reports</h3><div class="box" style="border-color:var(--gold)"><b>Quick Summary</b> <span class="note">as of ${dmy(L.d)}</span><div class="grid" style="margin-top:10px">
  ${kpi('Latest NAV',f(L.r,4))}${kpi('Current Value (Rs)',f(L.tv))}${kpi('Total Invested (Rs)',f(L.inv))}${kpi('Total Gain / Loss',sg(L.pl),cl(L.pl))}${kpi('Growth',sg(L.gr)+'%',cl(L.gr))}
  ${kpi('Maria Gain / Loss',sg(L.mpl),cl(L.mpl))}${kpi('Maeda Gain / Loss',sg(L.dpl),cl(L.dpl))}${kpi('Best day',dmy(best.d)+' ('+sg(best.chg)+'%)','up')}${kpi('Worst day',dmy(worst.d)+' ('+sg(worst.chg)+'%)','dn')}${kpi('Peak NAV',f(hi.r,4)+' · '+dmy(hi.d))}${(()=>{let pk=0,dd=0;s.forEach(x=>{pk=Math.max(pk,x.r);dd=Math.min(dd,(x.r-pk)/pk*100)});const days=(new Date(L.d)-new Date(s[0].d))/864e5||1,ar=(Math.pow(L.tv/L.inv,365/days)-1)*100;return kpi('Max drawdown',f(dd)+'%','dn')+kpi('Annualised return',sg(ar)+'%',cl(ar))+kpi('Units held',f(L.un,4))})()}</div>
  <p class="note" style="margin:0">Investment: Rs 100,000 each · Upfront charges 1,955 + tax 293.50 each · Buy NAV ${f(BASE.buyNAV,4)} · Units each ${f(unitsEach,4)}</p></div>
- <button class="btn" onclick="detail=!detail;show('reports')">${detail?'Hide':'View'} detailed report</button>`;
+ <button class="btn gold" onclick="detail=true;show('reports')">View detailed report</button>`;
  if(detail)h+=`<div class="tw" style="margin-top:12px"><table><tr><th>Date</th><th>NAV</th><th>Chg %</th><th>Maria Value</th><th>Maeda Value</th><th>Total Value</th><th>Gain/Loss</th><th>Growth %</th></tr>${[...s].reverse().map(r=>`<tr><td>${dmy(r.d)}</td><td>${f(r.r,4)}</td><td class="${cl(r.chg)}">${sg(r.chg)}</td><td>${f(r.mv)}</td><td>${f(r.dv)}</td><td>${f(r.tv)}</td><td class="${cl(r.pl)}">${sg(r.pl)}</td><td class="${cl(r.gr)}">${sg(r.gr)}</td></tr>`).join('')}</table></div>`;
  return h}
 function status(){const L=last(),be=L.inv/L.un,gap=(be-L.r)/L.r*100,ok=L.pl>=0;
@@ -235,20 +267,89 @@ function status(){const L=last(),be=L.inv/L.un,gap=(be-L.r)/L.r*100,ok=L.pl>=0;
  <p class="note">Break-even includes the upfront charges and tax already paid at purchase.</p>`}
 function stats(s){const ch=s.slice(1).map(x=>x.chg);const m=ch.reduce((a,b)=>a+b,0)/ch.length;const sd=Math.sqrt(ch.reduce((a,b)=>a+(b-m)**2,0)/ch.length);return{m,sd,up:ch.filter(c=>c>0).length,dn:ch.filter(c=>c<0).length,flat:ch.filter(c=>c===0).length}}
 function reg(ys){const n=ys.length,xs=ys.map((_,i)=>i),mx=(n-1)/2,my=ys.reduce((a,b)=>a+b,0)/n;let sxy=0,sxx=0;xs.forEach((x,i)=>{sxy+=(x-mx)*(ys[i]-my);sxx+=(x-mx)**2});const b=sxx?sxy/sxx:0;return{b,a:my-b*mx}}
-function forecast(){const s=series(),L=s[s.length-1],N=Math.min(14,s.length),w=s.slice(-N).map(x=>x.r),R=reg(w),st=stats(s);
- const days=[7,14,30];const sc=days.map(k=>{const base=Math.max(1,R.a+R.b*(N-1+k));const lo=L.r*(1+(st.m-st.sd*Math.sqrt(k))/100),hi=L.r*(1+(st.m+st.sd*Math.sqrt(k))/100);return{k,lo:Math.min(lo,base),base,hi:Math.max(hi,base)}});
- const pl=n=>L.un*n-L.inv;
- const fut=Array.from({length:30},(_,i)=>Math.max(1,R.a+R.b*(N+i))),fd=Array.from({length:30},(_,i)=>addD(L.d,i+1)),lab=[...s.slice(-N).map(x=>x.d),...fd];
- return `<h3>Forecasting</h3><div class="box"><b>Projection from last ${N} days (linear trend)</b><div class="grid" style="margin-top:10px">${kpi('Trend slope / day',sg(R.b)+' NAV',cl(R.b))}${kpi('Avg daily change',sg(st.m)+'%',cl(st.m))}${kpi('Daily volatility',f(st.sd)+'%')}</div>
- <div class="tw"><table><tr><th>Horizon</th><th>Low NAV</th><th>Base NAV</th><th>High NAV</th><th>Base value</th><th>Base gain/loss</th><th>Low gain/loss</th><th>High gain/loss</th></tr>
- ${sc.map(x=>`<tr><td>+${x.k} days</td><td>${f(x.lo,4)}</td><td>${f(x.base,4)}</td><td>${f(x.hi,4)}</td><td>${f(L.un*x.base)}</td><td class="${cl(pl(x.base))}">${sg(pl(x.base))}</td><td class="${cl(pl(x.lo))}">${sg(pl(x.lo))}</td><td class="${cl(pl(x.hi))}">${sg(pl(x.hi))}</td></tr>`).join('')}</table></div></div>
- ${chart([{v:[...w,...fut.map(()=>null)],c:'#1d6fd1',n:'Actual'},{v:[...w.map(()=>null).slice(0,N-1),w[N-1],...fut],c:'#c9a227',n:'Projected',dash:'5 3'}],{labels:lab,t:'NAV projection (next 30 days)',d:1,...fitO()})}
- <p class="note">A statistical projection of past NAV only — not financial advice. Mutual fund prices can fall as well as rise.</p>`}
+const cdf=z=>{const t=1/(1+.2316419*Math.abs(z)),d=.3989423*Math.exp(-z*z/2),p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return z>0?1-p:p};
+function fcModel(){const s=series(),L=s[s.length-1],N=Math.min(30,s.length),H=30,lr=s.slice(1).map((x,i)=>Math.log(x.r/s[i].r)),sd=Math.sqrt(lr.reduce((a,x)=>a+x*x,0)/Math.max(1,lr.length));
+ const ys=s.slice(-N).map(x=>Math.log(x.r)),mx=(N-1)/2,my=ys.reduce((a,b)=>a+b,0)/N;let sxy=0,sxx=0;ys.forEach((y,i)=>{sxy+=(i-mx)*(y-my);sxx+=(i-mx)**2});const slope=sxx?sxy/sxx:0,drift=slope*.5,path=k=>Array.from({length:H+1},(_,h)=>L.r*Math.exp(drift*h+k*sd*Math.sqrt(h)));
+ return{s,L,N,H,sd,slope,drift,base:path(0),bull:path(1),bear:path(-1)}}
+function fcBlock(wide){const m=fcModel(),{s,L,N,H,sd,slope,drift,base,bull,bear}=m,CP=[7,14,21,30],hist=s.slice(-N),inv=L.inv;
+ const lab=[...hist.map(x=>x.d),...Array.from({length:H},(_,i)=>addD(L.d,i+1))],nul=k=>Array(k).fill(null),pad=a=>[...nul(N-1),...a];
+ const mk=(sc,col)=>[{i:N-1,s:1,c:'#1d6fd1'},...CP.map(h=>({i:N-1+h,s:1,c:col}))];
+ const o=wide?fitO():{w:560,h:300,ticks:12};
+ const c1=chart([{v:[...hist.map(x=>x.r),...nul(H)],c:'#1d6fd1',n:'Actual'},{v:pad(base),c:'#c9a227',n:'Expected',dash:'5 3',w:2.2},{v:pad(bull),c:'#0a8f5b',n:'Bull +1σ',dash:'2 3',w:1.2,last:false},{v:pad(bear),c:'#c8352f',n:'Bear −1σ',dash:'2 3',w:1.2,last:false}],{labels:lab,t:'Expected rate (NAV per unit) – today, +7 / 14 / 21 / 30 days',d:1,hd:4,marks:mk(1,'#c9a227'),...o});
+ const V=a=>a.map(x=>x*L.un),c2=chart([{v:[...hist.map(x=>x.r*L.un),...nul(H)],c:'#1d6fd1',n:'Actual'},{v:pad(V(base)),c:'#c9a227',n:'Expected',dash:'5 3',w:2.2},{v:pad(V(bull)),c:'#0a8f5b',n:'Bull +1σ',dash:'2 3',w:1.2,last:false},{v:pad(V(bear)),c:'#c8352f',n:'Bear −1σ',dash:'2 3',w:1.2,last:false},{v:pad(Array(H+1).fill(inv)),c:'#8896ad',n:'Invested',dash:'4 3',w:1.2,last:false}],{labels:lab,t:'Expected value (Rs) – today, +7 / 14 / 21 / 30 days',d:0,hd:2,marks:mk(1,'#c9a227'),...o});
+ const pl=n=>L.un*n-inv,e=L.un*base[H],s30=sd*Math.sqrt(H),mu=drift*H,pUp=1-cdf((0-mu)/s30),pBE=1-cdf((Math.log(inv/L.tv)-mu)/s30);
+ return `<div class="box"><b>Forecast outlook</b> <span class="note">next 30 days · from last ${N} days (log trend, damped 50%) with ±1σ range</span><div class="grid" style="margin-top:10px">
+ ${kpi('Expected value (+30D)','Rs '+f(e),sg(e-L.tv)+' ('+sg((e/L.tv-1)*100)+'%) vs today',cl(e-L.tv))}${kpi('Bull case (+1σ)','Rs '+f(L.un*bull[H]),sg(pl(bull[H]))+' vs invested',cl(pl(bull[H])))}${kpi('Bear case (−1σ)','Rs '+f(L.un*bear[H]),sg(pl(bear[H]))+' vs invested',cl(pl(bear[H])))}
+ ${kpi('Chance above today','~'+f(pUp*100,0)+'%','in 30 days')}${kpi('Chance of break-even','~'+f(pBE*100,1)+'%','reaching Rs '+f(inv,0)+' in 30 days',pBE<.5?'dn':'up')}${kpi('Trend (30D regression)',sg(slope*100)+'% / day','forecast uses 50% of it · daily σ '+f(sd*100)+'%')}</div>
+ <div class="tw"><table><tr><th>Horizon</th><th>Date</th><th>Bear NAV</th><th>Expected NAV</th><th>Bull NAV</th><th>Expected value</th><th>Expected gain/loss</th><th>Bear gain/loss</th><th>Bull gain/loss</th></tr>
+ ${CP.map(h=>`<tr><td>+${h} days</td><td>${dmy(addD(L.d,h))}</td><td>${f(bear[h],4)}</td><td>${f(base[h],4)}</td><td>${f(bull[h],4)}</td><td>${f(L.un*base[h])}</td><td class="${cl(pl(base[h]))}">${sg(pl(base[h]))}</td><td class="${cl(pl(bear[h]))}">${sg(pl(bear[h]))}</td><td class="${cl(pl(bull[h]))}">${sg(pl(bull[h]))}</td></tr>`).join('')}</table></div></div>
+ ${wide?c1+c2:`<div class="cg2">${c1}${c2}</div>`}
+ <p class="note">Move the mouse (or touch) over a chart to read the exact date and value with guide lines. A statistical projection of past NAV only – not financial advice. Mutual fund prices can fall as well as rise.</p>`}
+function forecast(){return '<h3>Forecasting</h3>'+fcBlock(true)}
+/* ---------- detailed report ---------- */
+const MNS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];let RF='',RT='',RM=null;
+function setRange(a,b,m){RF=a;RT=b;RM=m;show('reports',1)}
+function rangeIn(){const a=pIso($('rfrom').value),b=pIso($('rto').value);if(a&&b&&a<=b)setRange(a,b,null);else toast('Enter dates as dd/mm/yyyy (From before To)',1)}
+function spark(v,c){const mn=Math.min(...v),mx=Math.max(...v),r=mx-mn||1;return `<svg viewBox="0 0 100 36" style="width:100%;height:36px;display:block"><polyline fill="none" stroke="${c}" stroke-width="2" points="${v.map((y,i)=>(v.length<2?0:i*100/(v.length-1)).toFixed(1)+','+(34-(y-mn)/r*32).toFixed(1)).join(' ')}"/></svg>`}
+function reportDetail(){const S=series(),A=S[0].d,Z=S[S.length-1].d;if(!RF||RF<A)RF=A;if(!RT||RT>Z)RT=Z;if(RF>RT){RF=A;RT=Z}
+ const R=S.filter(x=>x.d>=RF&&x.d<=RT),F=R[0],L=R[R.length-1],n=R.length,BUY=BASE.buyNAV,INV=L.inv,B=BANK,lb=R.map(x=>x.d);
+ const ch=R.slice(1).map(x=>x.chg),act=ch.filter(x=>Math.abs(x)>1e-4),up=act.filter(x=>x>0).length,dn=act.length-up,flat=ch.length-act.length;
+ let pk=-1e9;const dd=R.map(x=>{pk=Math.max(pk,x.r);return(x.r/pk-1)*100}),mdd=Math.min(...dd);
+ const best=R.reduce((p,x)=>x.chg>p.chg?x:p),worst=R.reduce((p,x)=>x.chg<p.chg?x:p),hi=R.reduce((p,x)=>x.r>p.r?x:p),lo=R.reduce((p,x)=>x.r<p.r?x:p),per=L.tv-F.tv;
+ const kp=(l,v,sub,c='')=>`<div class="kpi dk"><small>${l}</small><b class="${c}">${v}</b><div class="note" style="margin:2px 0 0">${sub||''}</div></div>`;
+ const yr=A.slice(0,4),mm=[...new Set(S.map(x=>x.d.slice(0,7)))],MS=mm.map(m=>{const r=S.filter(x=>x.d.startsWith(m)),i=S.indexOf(r[0]),o=i?S[i-1].tv:INV,c=r[r.length-1],cs=r.slice(1).map(x=>x.chg);return{m,o,c:c.tv,g:c.tv-o,p:(c.tv-o)/o*100,pl:c.pl,nav:c.r,hi:Math.max(...r.map(x=>x.r)),lo:Math.min(...r.map(x=>x.r)),first:r[0].d,last:c.d,up:cs.filter(x=>x>1e-4).length,dn:cs.filter(x=>x<-1e-4).length,vs:r.map(x=>x.tv)}}),MM={};MS.forEach(x=>MM[x.m]=x);
+ const y12=Array.from({length:12},(_,i)=>yr+'-'+String(i+1).padStart(2,'0')),ml=m=>MNS[+m.slice(5)-1]+' '+m.slice(0,4);
+ const chip=(t,a,b,m,on,dis)=>`<button class="chip${on?' on':''}${dis?' dis':''}" ${dis?'disabled':`onclick="setRange('${a}','${b}',${m?`'${m}'`:'null'})"`}>${t}</button>`;
+ const chips=chip('All',A,Z,null,RF===A&&RT===Z)+chip('Last 7D',S[Math.max(0,S.length-7)].d,Z,null,false)+chip('Last 30D',S[Math.max(0,S.length-30)].d,Z,null,false)+y12.map(m=>{const x=MM[m];return chip(MNS[+m.slice(5)-1],x?x.first:'',x?x.last:'',m,RM===m,!x)}).join('');
+ const tiles=y12.map(m=>{const x=MM[m];if(!x)return `<div class="mt0"><b>${ml(m)}</b><div class="note">No data</div></div>`;return `<div class="mt1 ${cl(x.g)}${RM===m?' sel':''}" onclick="setRange('${x.first}','${x.last}','${m}')"><b>${ml(m)}</b><div class="v ${cl(x.g)}">${sg(x.g)}</div><div class="note">${sg(x.p)}% · Cum. ${sg(x.pl)}</div>${spark(x.vs,x.g>=0?'#0a8f5b':'#c8352f')}</div>`}).join('');
+ const bins=[-99,-2,-1,-.5,0,.5,1,2,99],bl=['<-2','-2..-1','-1..-.5','-.5..0','0..0.5','.5..1','1..2','>2'],bc=Array(8).fill(0);ch.forEach(x=>{for(let i=0;i<8;i++)if(x>=bins[i]&&x<bins[i+1]){bc[i]++;break}});
+ const dh=t=>`<div class="dh">${t}</div>`,donutP=[{n:'Gain days',v:up,c:'#0a8f5b'},{n:'Loss days',v:dn,c:'#c8352f'},{n:'Flat',v:flat,c:'#8896ad'}].filter(p=>p.v>0);
+ /* reconciliation */
+ const rr=S.find(x=>x.d===B.asat),M0=B.funds[0],tvB=B.funds.reduce((a,x)=>a+x.val,0);
+ const ln=(nm,a,b,ok)=>`<tr><td>${nm}</td><td>${a}</td><td>${b}</td><td class="${ok?'up':'dn'}">${ok?'✓ Match':'✗ Differs'}</td></tr>`;
+ const rec=rr?ln('MIF units',f(rr.un,4),f(M0.u,4),Math.abs(rr.un-M0.u)<1e-3)+ln('NAV '+dmy(B.asat),f(rr.r,4),f(M0.nav,4),Math.abs(rr.r-M0.nav)<1e-3)+ln('Investment value',f(rr.tv,0),f(M0.val,0),Math.abs(rr.tv-M0.val)<1.5)+ln('To-date gain/loss',sg(Math.round(rr.pl)).replace(/\.00$/,''),sg(M0.gl).replace(/\.00$/,''),Math.abs(rr.pl-M0.gl)<1.5):'<tr><td colspan="4">No app rate for the statement date</td></tr>';
+ /* investor split */
+ const ex=plans.filter(p=>p.status==='Executed'),mI=BASE.invest+ex.reduce((a,p)=>a+p.mAmt,0),dI=BASE.invest+ex.reduce((a,p)=>a+p.dAmt,0),M2=B.funds[1],m2in=B.tx.filter(t=>/^PURCHASE/.test(t[1])).reduce((a,t)=>a+t[2],0);
+ const inv=(nm,I,v,p,mi)=>`<tr><td>${nm}</td><td>${f(I,0)}</td><td>${f(v/L.r,2)}</td><td>${f(v)}</td><td class="${cl(p)}">${sg(p)}</td><td class="${cl(p)}">${sg(p/I*100)}%</td><td>${mi&&M2?f(m2in,0):'–'}</td><td class="${mi&&M2&&M2.gl>=0?'up':''}">${mi&&M2?f(M2.val,0)+' ('+sg(M2.gl).replace(/\.00$/,'')+')':'–'}</td></tr>`;
+ /* analysis cards */
+ const S7=S[Math.max(0,S.length-8)],S30=S[Math.max(0,S.length-31)],t7=(L.r/S7.r-1)*100,t30=(L.r/S30.r-1)*100;let apk=S[0],alo=S[0],pp=-1,amd=0;S.forEach(x=>{if(x.r>apk.r)apk=x;if(x.r<alo.r)alo=x;pp=Math.max(pp,x.tv);amd=Math.min(amd,(x.tv/pp-1)*100)});
+ const sa=S.slice(1).map(x=>x.chg),sd=Math.sqrt(sa.reduce((a,x)=>a+x*x,0)/Math.max(1,sa.length)),sact=sa.filter(x=>Math.abs(x)>1e-4),sup=sact.filter(x=>x>0).length,be=L.inv/L.un,costs=2*(BASE.charges+BASE.tax),eq=B.funds.length?B.funds[0].val/tvB*100:0;
+ const card=(h,it,c='')=>`<div class="rc ${c}"><h4>${h}</h4><ul>${it.map(i=>'<li>'+i+'</li>').join('')}</ul></div>`;
+ const cards=[card('📊 Performance snapshot',[`Value <b>Rs ${f(L.tv)}</b> vs Rs ${f(L.inv)} invested → <b class="${cl(L.pl)}">${sg(L.pl)} (${sg(L.gr)}%)</b>.`,L.pl<0?`About <b>${f(costs/L.inv*100)}%</b> of the loss came on day one from upfront charges and tax (Rs ${f(costs,0)}); the rest, roughly Rs ${f(Math.max(0,-L.pl-costs))}, is market movement in NAV.`:`Upfront charges and tax already paid (Rs ${f(costs,0)}) are included in this result.`,`NAV moved from ${f(BUY,2)} (buy) to ${f(L.r,2)} (${sg((L.r/BUY-1)*100)}%).`,`Last 7 days: ${sg(t7)}% · last 30 days: ${sg(t30)}%.`]),
+ card('⚠️ Risk assessment',[`Max drawdown so far <b class="dn">${f(amd)}%</b>; NAV is ${f((L.r/apk.r-1)*100)}% from its peak (${f(apk.r,2)} on ${dmy(apk.d)}) and ${sg((L.r/alo.r-1)*100)}% from its low (${f(alo.r,2)} on ${dmy(alo.d)}).`,`Daily volatility ≈ ${f(sd)}% (annualised ≈ ${f(sd*Math.sqrt(252),1)}%) – typical of an equity fund.`,`Up-days were ${f(sup/Math.max(1,sact.length)*100,0)}% of the days that moved.`,`Per the bank statement, ${f(eq)}% of the portfolio is in MIF (equity) and ${f(100-eq)}% in MIIF (income).`]),
+ card('🎯 Recovery levels',[`To return to the buy rate (${f(BUY,2)}): NAV must change <b>${sg((BUY/L.r-1)*100)}%</b>.`,`To break even on Rs ${f(L.inv,0)} (including charges): NAV ≈ <b>${f(be,2)}</b>, i.e. <b>${sg((be/L.r-1)*100)}%</b> from today.`,`Current NAV is ${f(L.r-alo.r,2)} above the period low (${f(alo.r,2)}).`]),
+ card('💡 Options to consider',[`<span class="tag">Hold</span> Equity funds are usually judged over multi-year periods; selling now would lock in any loss plus the charges already paid.`,`<span class="tag">Add gradually</span> Averaging in lowers the average cost, but each purchase carries a new upfront charge (~${f(costs/(2*BASE.invest)*100,3)}%) and recovery is not guaranteed.`,`<span class="tag">Diversify</span> Consider whether part belongs in a lower-risk Shariah-compliant income or money-market fund, based on each investor's goal and horizon.`,`<span class="tag">Reduce/Exit</span> Reasonable only if the money is needed soon or the risk no longer fits; check the fund's redemption terms first.`]),
+ card('🔔 Watch-list &amp; monitoring',[`Review weekly or monthly rather than daily – day-to-day NAV noise (σ ≈ ${f(sd)}%) can mislead.`,`Set review triggers, e.g. NAV &lt; ${f(alo.r,2)} (new low) or NAV &gt; ${f(BUY,2)} (back to cost).`,`Compare with the fund's benchmark (KMI-30) and peer Islamic equity funds over 1–3 years.`]),
+ card('📌 Important note',[`This is a data-based analysis, <b>not personalised financial advice</b>. Past performance does not predict future returns. Please consult a licensed financial advisor before buying, selling or switching.`],'disc')].join('');
+ return `<div class="dhead"><div><h3 style="margin:0">Maria &amp; Maeda – Meezan Islamic Investment <span style="font-weight:400">(Detail Report)</span></h3><small>Portfolio ${esc(B.port||'')} · ${esc(B.holder||'')} · MIF Growth-B · Daily NAV tracking · Verified vs bank statement ${dmy(B.asat)}</small></div><div class="note" style="color:#dbeafe">Data: ${dmy(A)} → ${dmy(Z)} · ${S.length} days</div></div>
+ <div class="noprint" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button class="btn ghost" onclick="detail=false;show('reports')">← Quick summary</button><button class="btn" onclick="window.print()">🖨 Print / Save PDF</button></div>
+ <div class="box noprint"><div class="row"><div><label>From (dd/mm/yyyy)</label><input id="rfrom" class="dt" value="${dmy(RF)}" maxlength="10" inputmode="numeric" autocomplete="off" onchange="rangeIn()"></div><div><label>To (dd/mm/yyyy)</label><input id="rto" class="dt" value="${dmy(RT)}" maxlength="10" inputmode="numeric" autocomplete="off" onchange="rangeIn()"></div></div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${chips}</div></div>
+ ${dh('Portfolio KPIs <small>(selected range)</small>')}<div class="grid">
+ ${kp('Units held',f(L.un,2),'Maria / Maeda '+f(L.un/2,2)+' each')}${kp('Total invested','Rs '+f(L.inv,0),'Maria '+f(mI,0)+' · Maeda '+f(dI,0))}${kp('Current value','Rs '+f(L.tv),'as of '+dmy(L.d))}${kp('Total gain / loss','Rs '+sg(L.pl),sg(L.gr)+'% vs invested',cl(L.pl))}
+ ${kp('Maria P/L','Rs '+sg(L.mpl),sg(L.mpl/mI*100)+'%',cl(L.mpl))}${kp('Maeda P/L','Rs '+sg(L.dpl),sg(L.dpl/dI*100)+'%',cl(L.dpl))}${kp('Latest NAV',f(L.r,4),'as of '+dmy(L.d))}${kp('NAV vs buy NAV',sg(L.r-BUY)+' ('+sg((L.r/BUY-1)*100)+'%)','Buy NAV '+f(BUY,4),cl(L.r-BUY))}
+ ${kp('Recovery needed',sg((L.inv/L.tv-1)*100)+'%','to reach break-even',L.pl<0?'dn':'up')}${kp('Best day',sg(best.chg)+'%',dmy(best.d),'up')}${kp('Worst day',sg(worst.chg)+'%',dmy(worst.d),'dn')}${kp('NAV high',f(hi.r,4),dmy(hi.d),'up')}
+ ${kp('NAV lowest',f(lo.r,4),dmy(lo.d),'dn')}${kp('Period change','Rs '+sg(per),sg(per/F.tv*100)+'% ('+dmy(F.d)+' → '+dmy(L.d)+')',cl(per))}${kp('Max drawdown',f(mdd)+'%','peak to trough','dn')}${kp('Break-even NAV',f(be,4),'to recover Rs '+f(L.inv,0))}${kp('Days in range',n,dmy(F.d)+' → '+dmy(L.d))}</div>
+ ${dh('Month-wise gain / loss <small>(click a month to filter)</small>')}<div class="mtg">${tiles}</div>
+ ${dh('Performance')}<div class="cg3">
+ ${chart([{v:R.map(x=>x.r),c:'#1d6fd1',n:'NAV'},{v:R.map(()=>BUY),c:'#c9a227',n:'Buy NAV',dash:'5 3',w:1.4,last:false}],{labels:lb,t:'NAV per unit vs buy rate',sub:'Latest '+f(L.r,4),d:1,hd:4})}
+ ${chart([{v:R.map(x=>x.tv),c:'#0a8f5b',area:1,n:'Value'},{v:R.map(x=>x.inv),c:'#8896ad',n:'Invested',dash:'4 3',w:1.2,last:false}],{labels:lb,t:'Portfolio value vs invested (Rs)',sub:'Rs '+f(L.tv,0),d:0})}
+ ${chart([{v:R.map(x=>x.gr),c:'#c8352f',area:1,n:'Return %'}],{labels:lb,zero:1,t:'Return % on investment',sub:sg(L.gr)+'%',d:1})}</div>
+ ${dh('Risk &amp; behaviour')}<div class="cg3">
+ ${chart([{v:dd,c:'#c8352f',area:1,n:'Drawdown %'}],{labels:lb,zero:1,t:'Drawdown from peak (%)',sub:'Max '+f(mdd)+'%',d:1})}
+ ${chart([{v:bc}],{cats:bl,bars:1,colors:bl.map((_,i)=>i<4?'#c8352f':'#0a8f5b'),nn:1,t:'Daily return distribution (days)',sub:ch.length+' days',d:0,leg:false})}
+ ${chart([{v:MS.map(x=>x.g)}],{cats:MS.map(x=>MNS[+x.m.slice(5)-1]+' '+x.m.slice(2,4)),bars:1,t:'Month-wise gain / loss (Rs)',d:0,leg:false})}
+ ${donut(donutP,{t:'Gain vs loss days',center:ch.length+' days'})}</div>
+ ${dh('🔮 Forecast outlook <small>(next 30 days, based on data trend)</small>')}${fcBlock(false)}
+ ${dh('Monthly summary matrix')}<div class="tw"><table><tr><th>Month</th><th>Opening</th><th>Closing</th><th>Gain/Loss</th><th>%</th><th>Cum. P/L</th><th>NAV close</th><th>NAV high</th><th>NAV low</th><th>Up/Down</th></tr>${MS.map(x=>`<tr><td>${ml(x.m)}</td><td>${f(x.o)}</td><td>${f(x.c)}</td><td class="${cl(x.g)}">${sg(x.g)}</td><td class="${cl(x.g)}">${sg(x.p)}%</td><td class="${cl(x.pl)}">${sg(x.pl)}</td><td>${f(x.nav,4)}</td><td>${f(x.hi,4)}</td><td>${f(x.lo,4)}</td><td>${x.up}/${x.dn}</td></tr>`).join('')}</table></div>
+ ${dh('Investor split <small>(MIF split 50/50 · MIIF belongs to Maria only)</small>')}<div class="tw"><table><tr><th>Investor</th><th>MIF invested</th><th>MIF units</th><th>MIF value</th><th>MIF gain/loss</th><th>MIF return</th><th>MIIF invested</th><th>MIIF value (${dmy(B.asat)})</th></tr>${inv('Maria',mI,L.mv,L.mpl,1)}${inv('Maeda',dI,L.dv,L.dpl,0)}<tr style="font-weight:700"><td>Total</td><td>${f(L.inv,0)}</td><td>${f(L.un,2)}</td><td>${f(L.tv)}</td><td class="${cl(L.pl)}">${sg(L.pl)}</td><td class="${cl(L.pl)}">${sg(L.gr)}%</td><td>${f(m2in,0)}</td><td>${M2?f(M2.val,0)+' ('+sg(M2.gl).replace(/\.00$/,'')+')':'–'}</td></tr></table></div>
+ ${dh('🏦 Bank statement reconciliation <small>(as at '+dmy(B.asat)+')</small>')}<div class="tw"><table><tr><th>Item</th><th>Dashboard</th><th>Bank</th><th>Status</th></tr>${rec}</table></div>
+ ${dh('📋 Investment analysis &amp; recommendations <small>(full period, all data)</small>')}<div class="rcg">${cards}</div>
+ <p class="note">Cost basis = Rs ${f(L.inv,0)} gross invested (incl. upfront charges &amp; tax). Gain/loss = market value − invested. Forecast: statistical projection from the last 30 days' NAV trend (damped 50%) with ±1σ range from historical daily volatility – illustrative only, not a prediction or advice.</p>`}
 function ma(v,k){return v.map((_,i)=>{const a=v.slice(Math.max(0,i-k+1),i+1);return a.reduce((x,y)=>x+y,0)/a.length})}
 function trend(){const s=series(),r=s.map(x=>x.r),st=stats(s),L=s[s.length-1];const d7=s.length>7?(L.r-s[s.length-8].r)/s[s.length-8].r*100:0,d30=(L.r-s[0].r)/s[0].r*100;
  const wk=[];for(let i=0;i<s.length;i+=7){const g=s.slice(i,i+7);wk.push({a:g[0].d,b:g[g.length-1].d,o:g[0].r,c:g[g.length-1].r})}
  return `<h3>Trend</h3><div class="grid">${kpi('Last 7 days',sg(d7)+'%',cl(d7))}${kpi('Since first rate',sg(d30)+'%',cl(d30))}${kpi('Up / Down / Flat days',st.up+' / '+st.dn+' / '+st.flat)}${kpi('Direction',L.r>ma(r,7).pop()?'Above 7-day avg ▲':'Below 7-day avg ▼',L.r>ma(r,7).pop()?'up':'dn')}</div>
- ${chart([{v:r,c:'#1d6fd1',n:'NAV'},{v:ma(r,3),c:'#c9a227',n:'3-day avg'},{v:ma(r,7),c:'#0a8f5b',n:'7-day avg'}],{labels:s.map(x=>x.d),t:'NAV with moving averages',d:1,...fitO()})}
+ ${chart([{v:r,c:'#1d6fd1',n:'NAV'},{v:ma(r,3),c:'#c9a227',n:'3-day avg'},{v:ma(r,7),c:'#0a8f5b',n:'7-day avg'}],{labels:s.map(x=>x.d),t:'NAV with moving averages',d:1,hd:4,...fitO()})}
  <div class="tw"><table><tr><th>Week</th><th>Open NAV</th><th>Close NAV</th><th>Change %</th></tr>${wk.map(x=>`<tr><td>${dmy(x.a)} → ${dmy(x.b)}</td><td>${f(x.o,4)}</td><td>${f(x.c,4)}</td><td class="${cl(x.c-x.o)}">${sg((x.c-x.o)/x.o*100)}</td></tr>`).join('')}</table></div>`}
 function graphs(){const s=series(),lb=s.map(x=>x.d),r=s.map(x=>x.r),L=s[s.length-1];
  let pk=-1/0;const dd=r.map(v=>{pk=Math.max(pk,v);return(v/pk-1)*100});
@@ -258,7 +359,7 @@ function graphs(){const s=series(),lb=s.map(x=>x.d),r=s.map(x=>x.r),L=s[s.length
  const bins={};s.slice(1).forEach(x=>{const b=Math.round(x.chg/0.5)*0.5;bins[b]=(bins[b]||0)+1});const bk=Object.keys(bins).map(Number).sort((a,b)=>a-b);
  const tv=BANK.funds.reduce((a,x)=>a+x.val,0);
  return `<h3>Graphs</h3><div class="cg">
- ${chart([{v:r,c:'#1d6fd1',area:1,n:'NAV'},{v:ma(r,7),c:'#c9a227',n:'7-day avg',w:1.4,last:false}],{labels:lb,t:'Closing NAV',sub:'Latest '+f(L.r,4),d:1})}
+ ${chart([{v:r,c:'#1d6fd1',area:1,n:'NAV'},{v:ma(r,7),c:'#c9a227',n:'7-day avg',w:1.4,last:false}],{labels:lb,t:'Closing NAV',sub:'Latest '+f(L.r,4),d:1,hd:4})}
  ${chart([{v:s.map(x=>x.tv),c:'#0a8f5b',area:1,n:'Value'},{v:s.map(x=>x.inv),c:'#8896ad',n:'Invested',dash:'4 3',w:1.2,last:false}],{labels:lb,t:'Portfolio value vs invested (Rs)',sub:'Rs '+f(L.tv,0),d:0})}
  ${chart([{v:s.map(x=>x.pl),c:'#c8352f',area:1}],{labels:lb,zero:1,t:'Total gain / loss (Rs)',sub:sg(L.pl),d:0,leg:false})}
  ${chart([{v:s.map(x=>x.chg)}],{labels:lb,bars:1,t:'Daily change (%)',sub:'Last '+sg(L.chg)+'%',d:2,leg:false})}

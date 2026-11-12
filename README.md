@@ -1,4 +1,4 @@
-# Meezan Investment Tracker – v3.0.0 (private)
+# Meezan Investment Tracker – v3.1.0 (private)
 
 ## Update steps (10 minutes)
 1. Apps Script: replace ALL code with `Code.gs` -> Save.

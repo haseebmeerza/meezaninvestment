@@ -1,5 +1,5 @@
 /**
- * Meezan Investment Tracker v3.0.0 – Google Sheet backend (Apps Script, bound to the Sheet).
+ * Meezan Investment Tracker v3.1.0 – Google Sheet backend (Apps Script, bound to the Sheet).
  * Sheet "Rates": A Date, B NAV (you / the app enter these), C:K formulas (script writes them), M:N parameters.
  * Sheet "Plans": investment plans added from the app.
  * Rule: a Friday rate is applied automatically to Saturday and Sunday.
@@ -8,11 +8,11 @@ const RATES = 'Rates', PLANS = 'Plans', TZ = SpreadsheetApp.getActive().getSprea
 const START = '2026-06-17', CAL_START = '2026-06-01', END = '2026-12-31';   // START = first seed rate; calendar rows begin 1 June 2026   // calendar rows, like the Excel (rates blank until entered)
 const SEED = [170.1922, 170.1922, 170.1922, 170.1922, 170.1922, 169.1158, 168.9046, 168.9046, 168.9046, 168.9046, 168.9046, 168.9046, 168.6041, 169.7, 172.0482, 172.6587, 173.5081, 173.5081, 173.5081, 175.3126, 173.5889, 169.023, 168.8494, 169.6963, 169.6963, 169.6963, 167.1206, 161.1499, 162.6919, 165.6168, 163.0619, 163.0619, 163.0619, 163.0872, 163.063, 161.5665, 159.0563, 158.5053, 158.5053, 158.5053, 165.3995, 164.9907, 163.085, 162.0444, 162.6489, 162.6489, 162.6489, 164.9567, 163.8439, 166.501, 168.0725, 167.95, 167.95, 167.95, 167.7894, 166.0406, 166.3348, 166.2893, 166.2893, 166.2893, 166.2893, 167.0441, 164.1014, 162.9894, 163.1252, 164.696, 164.696, 164.696, 164.5455, 164.5741, 164.3279, 164.3279, 164.8071, 164.8071, 164.8071, 164.8302, 164.8722, 163.1833, 163.241, 163.6147, 163.6147, 163.6147, 161.8187, 160.8015, 160.0133, 156.6644, 158.6359, 158.6359, 158.6359, 156.0864, 157.0741, 155.6762, 156.5435, 159.6763, 159.6763, 159.6763, 158.4533, 158.9749, 160.1294, 160.13, 158.156, 158.156, 158.156, 158.068, 157.5153, 157.9976, 156.7499, 156.2384, 156.2384, 156.2384, 154.3667, 156.9964, 156.8103, 155.8041, 155.4522, 155.4522, 155.4522, 153.6078, 153.4495, 154.1391, 154.8773, 154.7994, 154.7994, 154.7994, 154.49, 153.6336, 153.96, 152.076, 150.3916, 150.3916, 150.3916, 151.1222, 151.8735, 152.7288, 154.04, 153.1358, 153.1358, 153.1358, 153.0154];
 const EVENTS = 'Events', EV_COLS = ['date','title','note','type'];
-const SITE = 'https://www.almeezangroup.com/fund-prices', FUND_NAME = 'Meezan Islamic Fund';
+const SITE = 'https://www.almeezangroup.com/fund-prices/', FUND_NAME = 'Meezan Islamic Fund';
 const DEFAULT_HOLIDAYS = [['2026-08-14','Independence Day'],['2026-11-09','Iqbal Day'],['2026-12-25','Quaid-e-Azam Day / Christmas']];
 let HOL = {};   // holiday dates (yyyy-mm-dd) loaded per request from the Events sheet (type = Holiday)
 const PLAN_COLS = ['name','date','mAmt','dAmt','nav','mUnits','dUnits','units','status'];
-const VERSION = '3.0.0';
+const VERSION = '3.1.0';
 const ADMIN_ONLY = { reset: 1, deleteRate: 1 };           // actions only the admin password may run
 // Private figures live ONLY here (server side) and are sent to the app after a successful login.
 const CONFIG = { invest: 100000, charges: 1955, tax: 293.5, unitsTotal: 1155.5629, portfolio: '902300-1', bank: {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-09-30',printed:'2026-10-01',
@@ -100,20 +100,43 @@ function fillWk(o) {
 }
 function loadHolidays() { HOL = {}; readEvents().forEach(function (e) { if (e.type === 'Holiday') HOL[e.date] = 1; }); }
 
-/** Read today's MIF rate from the Al Meezan fund-prices page (server-side, so no browser CORS limits). */
+/** Public text relay, used ONLY if the bank site refuses Google's servers (HTTP 403). Set to '' to disable. */
+const RELAY = 'https://r.jina.ai/';
+function pageText(url, headers) { const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true, headers: headers }); return { code: res.getResponseCode(), text: res.getContentText() }; }
+/** Table rows as arrays of cell text, from HTML (<tr>/<td>) or from a markdown table (| a | b |). */
+function tableRows(text) {
+  const rows = [];
+  if (/<tr[\s>]/i.test(text)) {
+    (text.match(/<tr[\s\S]*?<\/tr>/gi) || []).forEach(function (tr) {
+      const cells = (tr.match(/<t[dh][\s\S]*?<\/t[dh]>/gi) || []).map(function (c) { return c.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').trim(); });
+      if (cells.length) rows.push(cells);
+    });
+  } else {
+    text.split(/\r?\n/).forEach(function (l) { l = l.trim(); if (l.charAt(0) === '|') rows.push(l.replace(/^\||\|$/g, '').split('|').map(function (c) { return c.trim(); })); });
+  }
+  return rows;
+}
+/** Read the "Repurchase (Rs.)" rate of Meezan Islamic Fund (Equity Funds) and its Validity Date from the Al Meezan fund-prices page. */
 function fetchSite() {
-  const res = UrlFetchApp.fetch(SITE, { muteHttpExceptions: true, followRedirects: true, headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml', 'Accept-Language': 'en-US,en;q=0.9', 'Referer': 'https://www.almeezangroup.com/' } });
-  if (res.getResponseCode() !== 200) throw new Error('Bank website refused automatic access (HTTP ' + res.getResponseCode() + ') – enter the rate under Add a rate; weekends and holidays fill automatically');
-  const text = res.getContentText().replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi, ' ').replace(/<\/(td|th)>/gi, ' | ').replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
-  const re = new RegExp('(?:^|\\|)\\s*' + FUND_NAME + '\\s*\\|\\s*\\d{1,2} \\w{3} \\d{4}\\s*\\|\\s*(\\d{1,2}) (\\w{3}) (\\d{4})\\s*\\|\\s*([\\d.]+)\\s*\\|\\s*([\\d.]+)\\s*\\|\\s*([\\d.]+)', 'i');
-  const m = text.match(re);
-  if (!m) throw new Error('Could not find the "' + FUND_NAME + '" row on the bank website (page layout may have changed)');
+  const H = { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36', 'Accept': 'text/html,application/xhtml+xml', 'Accept-Language': 'en-US,en;q=0.9', 'Referer': 'https://www.almeezangroup.com/' };
+  let r = pageText(SITE, H), via = 'bank website';
+  if ((r.code !== 200 || !/Repurchase/i.test(r.text)) && RELAY) {
+    try { const r2 = pageText(RELAY + SITE, { 'Accept': 'text/plain' }); if (r2.code === 200 && /Repurchase/i.test(r2.text)) { r = r2; via = 'relay'; } } catch (e) { /* keep first result */ }
+  }
+  if (r.code !== 200) throw new Error('Bank website refused automatic access (HTTP ' + r.code + ') – enter the rate under Add a rate; weekends and holidays fill automatically');
+  const rows = tableRows(r.text);
+  const head = rows.filter(function (c) { return c.some(function (x) { return /repurchase/i.test(x); }); })[0];
+  if (!head) throw new Error('Could not find the "Repurchase (Rs.)" column on the bank website (page layout may have changed)');
+  const iRep = head.findIndex(function (x) { return /repurchase/i.test(x); }), iVal = head.findIndex(function (x) { return /validity/i.test(x); });
+  const row = rows.filter(function (c) { return String(c[0]).toLowerCase() === FUND_NAME.toLowerCase(); })[0];
+  if (!row) throw new Error('Could not find the "' + FUND_NAME + '" row on the bank website (page layout may have changed)');
+  const m = String(row[iVal]).match(/(\d{1,2}) (\w{3}) (\d{4})/);
+  if (!m) throw new Error('Could not read the Validity Date for ' + FUND_NAME);
   const mon = { jan:1, feb:2, mar:3, apr:4, may:5, jun:6, jul:7, aug:8, sep:9, oct:10, nov:11, dec:12 }[m[2].toLowerCase()];
   const date = m[3] + '-' + ('0' + mon).slice(-2) + '-' + ('0' + m[1]).slice(-2);
-  const repurchase = Number(m[4]), nav = Number(m[6]);
-  const rate = repurchase > 0 ? repurchase : nav;          // open-end funds publish the NAV in the Repurchase column
-  if (!(rate > 20 && rate < 1000)) throw new Error('Unexpected NAV value on bank website: ' + rate);
-  return { date: date, rate: rate };
+  const rate = Number(row[iRep]);
+  if (!(rate > 20 && rate < 1000)) throw new Error('Unexpected Repurchase value on bank website: ' + row[iRep]);
+  return { date: date, rate: rate, via: via };
 }
 /** Fetch the bank rate, store it for its validity date, carry weekends/holidays, audit gaps. Safe to call repeatedly. */
 function syncSite() {
@@ -124,7 +147,7 @@ function syncSite() {
     info.date = s.date; info.rate = s.rate;
     if (r[s.date] !== s.rate) { r[s.date] = s.rate; info.updated = true; }
     wkSet(r, s.date);
-    info.ok = true; info.msg = info.updated ? 'Bank rate saved for ' + s.date : 'Already up to date (' + s.date + ')';
+    info.ok = true; info.msg = (info.updated ? 'Bank rate saved for ' + s.date : 'Already up to date (' + s.date + ')') + ' · Repurchase rate via ' + s.via;
   } catch (e) { info.msg = String(e.message); }
   fillWk(r); writeRates(r);
   info.missing = missingDays(r);
