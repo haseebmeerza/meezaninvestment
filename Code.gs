@@ -1,5 +1,5 @@
 /**
- * Meezan Investment Tracker v3.1.0 – Google Sheet backend (Apps Script, bound to the Sheet).
+ * Meezan Investment Tracker v3.2.1 – Google Sheet backend (Apps Script, bound to the Sheet).
  * Sheet "Rates": A Date, B NAV (you / the app enter these), C:K formulas (script writes them), M:N parameters.
  * Sheet "Plans": investment plans added from the app.
  * Rule: a Friday rate is applied automatically to Saturday and Sunday.
@@ -12,32 +12,21 @@ const SITE = 'https://www.almeezangroup.com/fund-prices/', FUND_NAME = 'Meezan I
 const DEFAULT_HOLIDAYS = [['2026-08-14','Independence Day'],['2026-11-09','Iqbal Day'],['2026-12-25','Quaid-e-Azam Day / Christmas']];
 let HOL = {};   // holiday dates (yyyy-mm-dd) loaded per request from the Events sheet (type = Holiday)
 const PLAN_COLS = ['name','date','mAmt','dAmt','nav','mUnits','dUnits','units','status'];
-const VERSION = '3.1.0';
+const VERSION = '3.2.1';
 const ADMIN_ONLY = { reset: 1, deleteRate: 1 };           // actions only the admin password may run
 // Private figures live ONLY here (server side) and are sent to the app after a successful login.
 const CONFIG = { invest: 100000, charges: 1955, tax: 293.5, unitsTotal: 1155.5629, portfolio: '902300-1', bank: {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-09-30',printed:'2026-10-01',
  funds:[{n:'Meezan Islamic Fund (MIF)',t:'GROWTH-B',u:1155.5629,nav:157.9976,val:182576,gl:-17424,fy:-14549},{n:'Meezan Islamic Income Fund (MIIF)',t:'GROWTH-B',u:18.9207,nav:53.3381,val:1009,gl:9,fy:9}],
  tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]} };
 
-/** ---------- Security: password login (hashes in Script Properties, session token in cache) ---------- */
-function sha(s) { return Utilities.base64Encode(Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, s)); }
-/** Run ONCE from the editor: type the two real passwords below, Run, then put the placeholders back. */
-function setupPasswords() {
-  const USER_PW = 'CHANGE-ME-MARIA', ADMIN_PW = 'CHANGE-ME-ADMIN';
-  if (USER_PW.indexOf('CHANGE-ME') === 0 || ADMIN_PW.indexOf('CHANGE-ME') === 0) throw new Error('Edit USER_PW and ADMIN_PW first, then run again');
-  if (USER_PW === ADMIN_PW) throw new Error('Use two different passwords');
-  PropertiesService.getScriptProperties().setProperties({ PW_USER: sha(USER_PW), PW_ADMIN: sha(ADMIN_PW) });
-}
+/** ---------- Login: simple fixed passwords (change them here any time, then Deploy > New version) ---------- */
+const USER_PW = 'maria123', ADMIN_PW = 'maria123';   // same password = full access for everyone who knows it
 function login(pw) {
-  const cache = CacheService.getScriptCache(), P = PropertiesService.getScriptProperties();
-  if (!P.getProperty('PW_ADMIN')) return { ok: false, error: 'Passwords not set – run setupPasswords once in Apps Script' };
-  const fails = Number(cache.get('fails') || 0);
-  if (fails >= 6) return { ok: false, error: 'Too many wrong attempts – wait 10 minutes' };
-  const h = sha(String(pw || ''));
-  const role = h === P.getProperty('PW_ADMIN') ? 'admin' : (h === P.getProperty('PW_USER') ? 'user' : null);
-  if (!role) { cache.put('fails', String(fails + 1), 600); Utilities.sleep(700); return { ok: false, error: 'Wrong password' }; }
+  const p = String(pw == null ? '' : pw).trim();
+  const role = p === ADMIN_PW ? 'admin' : (p === USER_PW ? 'user' : null);
+  if (!role) { Utilities.sleep(500); return { ok: false, error: 'Wrong password' }; }
   const token = Utilities.getUuid() + Utilities.getUuid();
-  cache.put('t_' + token, role, 21600);                    // session lasts 6 hours
+  CacheService.getScriptCache().put('t_' + token, role, 21600);   // stays logged in for 6 hours
   return { ok: true, token: token, role: role };
 }
 function roleOf(token) { return token ? CacheService.getScriptCache().get('t_' + String(token)) : null; }
@@ -217,6 +206,21 @@ function writePlans(list) {
   if (list.length) s.getRange(2, 1, list.length, PLAN_COLS.length).setValues(list.map(function (p) { return PLAN_COLS.map(function (c) { return p[c] === undefined ? '' : p[c]; }); }));
 }
 
+const RATINGS = 'Ratings', RT_COLS = ['date','user','stars','status','gl','note'];
+function readRatings() {
+  const s = sh(RATINGS), n = s.getLastRow();
+  if (n < 2) return [];
+  return s.getRange(2, 1, n - 1, RT_COLS.length).getValues().filter(function (r) { return r[0] !== ''; }).map(function (r) {
+    return { date: iso(r[0]), user: String(r[1]), stars: Number(r[2]), status: r[3] === 'plus' ? 'plus' : 'minus', gl: Number(r[4]), note: String(r[5] || '') };
+  }).slice(-50);
+}
+function addRating(role, b) {
+  const st = Math.round(Number(b.stars));
+  if (!(st >= 1 && st <= 5)) throw new Error('Rating must be 1 to 5 stars');
+  const s = sh(RATINGS);
+  if (s.getLastRow() < 1) s.getRange(1, 1, 1, RT_COLS.length).setValues([RT_COLS]).setFontWeight('bold');
+  s.appendRow([Utilities.formatDate(new Date(), TZ, 'yyyy-MM-dd'), role === 'admin' ? 'Admin' : 'Maria', st, b.status === 'plus' ? 'plus' : 'minus', Math.round(Number(b.gl) || 0), String(b.note || '').slice(0, 200)]);
+}
 function readEvents() {
   const s = sh(EVENTS), n = s.getLastRow();
   if (n < 2) return [];
@@ -232,7 +236,7 @@ function writeEvents(list) {
   }
 }
 function out(o) { return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
-function state() { loadHolidays(); const r = readRates(); fillWk(r); return { rates: r, plans: readPlans(), events: readEvents(), config: CONFIG, version: VERSION }; }
+function state() { loadHolidays(); const r = readRates(); fillWk(r); return { rates: r, plans: readPlans(), events: readEvents(), ratings: readRatings(), config: CONFIG, version: VERSION }; }
 function doGet() { return out({ ok: true, app: 'Meezan Investment Tracker', version: VERSION }); }   // no data without login
 
 function doPost(e) {
@@ -275,6 +279,8 @@ function doPost(e) {
       sync = syncSite();
     } else if (b.action === 'audit') {
       const r = readRates(); if (fillWk(r)) writeRates(r); sync = { ok: true, msg: 'Audit complete', missing: missingDays(r) };
+    } else if (b.action === 'saveRating') {
+      addRating(role, b);
     } else if (b.action === 'state') { /* read only */ } else { throw new Error('Unknown action'); }
     SpreadsheetApp.flush();
     const st = state(); st.role = role; if (sync) st.sync = sync;

@@ -1,15 +1,11 @@
-# Meezan Investment Tracker – v3.1.0 (private)
+# Meezan Investment Tracker – v3.2.1 (private)
 
-## Update steps (10 minutes)
+## Update steps (5 minutes)
 1. Apps Script: replace ALL code with `Code.gs` -> Save.
-2. In `setupPasswords()` type the two real passwords (Maria's and your admin one), Run it ONCE, then change them back to the CHANGE-ME placeholders and Save.
-3. Run `setup` once, then `installTrigger` once.
-4. Deploy -> Manage deployments -> Edit -> New version -> Deploy (Execute as: Me, Access: Anyone). The /exec URL stays the same.
-5. GitHub: replace `index.html` -> Commit. Open the site and log in with the password only.
+2. Run `setup` once (first time only), then `installTrigger` once (first time only).
+3. Deploy -> Manage deployments -> Edit -> New version -> Deploy (Execute as: Me, Access: Anyone). The /exec URL stays the same.
+4. GitHub: replace `index.html` -> Commit. Open the site and log in with the password.
 
-## Roles
-- Admin password: everything (including Reset and deleting rates).
-- Maria password: view, add rates/plans/events, Check now.
-
-## Security
-All figures (investment, units, bank statement, portfolio no.) are stored only in Code.gs and are sent after login. The public page contains only the login box. Keep the Google Sheet sharing on "Restricted".
+## Password
+Login password: `maria123` (set at the top of `Code.gs`: `USER_PW` / `ADMIN_PW`). To change it, edit those two words, Save, and Deploy a New version. Nothing else to run.
+If you give `ADMIN_PW` a different password, that one can also Reset and delete rates; the other can view and add data only.

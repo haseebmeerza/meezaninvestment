@@ -103,7 +103,7 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.1.0 · Private – authorised users only.</p></div>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.2.1 · Private – authorised users only.</p></div>
  <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
  <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
@@ -114,13 +114,13 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
- <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.1.0</span></footer>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.2.1</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.1.0';let isAdmin=false;
-let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.2.1';let isAdmin=false;
+let ratings=[],rateSel=0,rateNote='',rateEdit=false;let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const dmy=d=>d?d.slice(8,10)+'/'+d.slice(5,7)+'/'+d.slice(0,4):'';
@@ -154,7 +154,7 @@ async function post(body){let r,t;try{r=await fetch(API_URL,{method:'POST',heade
 async function api(body){const j=await post({...body,token:tok()});
  if(j.auth===false){forceLogout();throw new Error('Session expired – please log in again')}
  if(j.error)throw new Error(j.error);return j}
-function applyState(j){if(j.config)setCfg(j.config);rates=j.rates||{};plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));fillWk(rates);if(j.sync)lastSync=j.sync}
+function applyState(j){if(j.config)setCfg(j.config);rates=j.rates||{};plans=(j.plans||[]).map(p=>({...p}));events=(j.events||[]).map(e=>({...e}));ratings=j.ratings||[];fillWk(rates);if(j.sync)lastSync=j.sync}
 async function load(quiet){const P=quiet?null:pStart('Connecting to Google Sheet… fetching latest rates');
  try{applyState(await api({action:'state'}));setSync('cloud');P&&P.done(true,'Updated – '+Object.keys(rates).length+' rates loaded');return true}
  catch(e){P&&P.done(false,'Sheet unreachable');setSync('err',e.message);if(user&&!/log in again/.test(e.message))toast('Cannot reach Google Sheet: '+e.message,1);return false}}
@@ -187,7 +187,7 @@ function enter(role){isAdmin=role==='admin';user=isAdmin?'Admin':'Maria';
  $('home').style.display='none';$('app').style.display='flex';$('hi').textContent='Signed in: '+user+' · v'+VERSION;
  const rb=document.querySelector('[onclick="doReset()"]');if(rb)rb.style.display=isAdmin?'':'none';buildMenu();show('reports')}
 function forceLogout(){try{sessionStorage.removeItem('mift');sessionStorage.removeItem('mifr')}catch(e){}
- user='';isAdmin=false;rates={};plans=[];events=[];$('out').innerHTML='';$('app').style.display='none';$('home').style.display='flex'}
+ user='';isAdmin=false;rates={};plans=[];events=[];ratings=[];$('out').innerHTML='';$('app').style.display='none';$('home').style.display='flex'}
 function logout(){forceLogout()}
 const MENU=[['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['statement','🧾 Bank Statement'],['rates','🏦 Daily Rates']];
 function buildMenu(){$('menu').innerHTML=MENU.map(m=>`<button data-v="${m[0]}" onclick="show('${m[0]}')">${m[1]}</button>`).join('')}
@@ -255,9 +255,19 @@ function reports(){if(detail)return reportDetail();const s=series(),L=s[s.length
  ${kpi('Latest NAV',f(L.r,4))}${kpi('Current Value (Rs)',f(L.tv))}${kpi('Total Invested (Rs)',f(L.inv))}${kpi('Total Gain / Loss',sg(L.pl),cl(L.pl))}${kpi('Growth',sg(L.gr)+'%',cl(L.gr))}
  ${kpi('Maria Gain / Loss',sg(L.mpl),cl(L.mpl))}${kpi('Maeda Gain / Loss',sg(L.dpl),cl(L.dpl))}${kpi('Best day',dmy(best.d)+' ('+sg(best.chg)+'%)','up')}${kpi('Worst day',dmy(worst.d)+' ('+sg(worst.chg)+'%)','dn')}${kpi('Peak NAV',f(hi.r,4)+' · '+dmy(hi.d))}${(()=>{let pk=0,dd=0;s.forEach(x=>{pk=Math.max(pk,x.r);dd=Math.min(dd,(x.r-pk)/pk*100)});const days=(new Date(L.d)-new Date(s[0].d))/864e5||1,ar=(Math.pow(L.tv/L.inv,365/days)-1)*100;return kpi('Max drawdown',f(dd)+'%','dn')+kpi('Annualised return',sg(ar)+'%',cl(ar))+kpi('Units held',f(L.un,4))})()}</div>
  <p class="note" style="margin:0">Investment: Rs 100,000 each · Upfront charges 1,955 + tax 293.50 each · Buy NAV ${f(BASE.buyNAV,4)} · Units each ${f(unitsEach,4)}</p></div>
- <button class="btn gold" onclick="detail=true;show('reports')">View detailed report</button>`;
+ ${ratingBox(L)}<button class="btn gold" onclick="detail=true;show('reports')">View detailed report</button>`;
  if(detail)h+=`<div class="tw" style="margin-top:12px"><table><tr><th>Date</th><th>NAV</th><th>Chg %</th><th>Maria Value</th><th>Maeda Value</th><th>Total Value</th><th>Gain/Loss</th><th>Growth %</th></tr>${[...s].reverse().map(r=>`<tr><td>${dmy(r.d)}</td><td>${f(r.r,4)}</td><td class="${cl(r.chg)}">${sg(r.chg)}</td><td>${f(r.mv)}</td><td>${f(r.dv)}</td><td>${f(r.tv)}</td><td class="${cl(r.pl)}">${sg(r.pl)}</td><td class="${cl(r.gr)}">${sg(r.gr)}</td></tr>`).join('')}</table></div>`;
  return h}
+function pickStar(n){rateSel=n;show('reports',1)}
+async function saveRating(){if(!rateSel){toast('Tap a star first',1);return}const L=last();
+ if(await persist({action:'saveRating',stars:rateSel,status:L.pl>=0?'plus':'minus',gl:Math.round(L.pl),note:rateNote})){rateSel=0;rateNote='';rateEdit=false;toast('Rating saved');show('reports')}}
+function ratingBox(L){const st=L.pl>=0?'plus':'minus',lr=ratings[ratings.length-1],due=!lr||lr.status!==st||rateEdit;
+ const stars=(n,pick)=>[1,2,3,4,5].map(i=>`<span ${pick?`onclick="pickStar(${i})" `:''}style="${pick?'cursor:pointer;font-size:30px;':'font-size:18px;'}color:${i<=n?'#c9a227':'var(--brd)'}">★</span>`).join('');
+ const hist=ratings.slice(-5).reverse().map(r=>`<tr><td>${dmy(r.date)}</td><td>${esc(r.user)}</td><td style="color:#c9a227">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</td><td>${r.status==='plus'?'In profit':'In loss'}</td><td class="${cl(r.gl)}">${sg(r.gl)}</td><td style="text-align:left;white-space:normal">${esc(r.note||'')}</td></tr>`).join('');
+ return `<div class="box" style="margin-top:14px;border-color:${due?'var(--gold)':'var(--brd)'}"><b>Performance rating</b> <span class="badge ${st==='plus'?'up':'dn'}" style="margin-left:6px">${st==='plus'?'IN PROFIT':'IN LOSS'} · ${sg(L.pl)}</span>
+ ${due?`<p class="note" style="margin:8px 0 4px">${lr&&!rateEdit?'The result moved from '+(lr.status==='plus'?'profit to loss':'loss to profit')+' – ':''}How do you rate this performance? You are asked again only when the result moves between profit and loss.</p><div>${stars(rateSel,1)}</div><div class="row" style="margin-top:8px"><div><input id="rnote" placeholder="Note (optional)" maxlength="200" value="${esc(rateNote)}" oninput="rateNote=this.value"></div><div><button class="btn gold" onclick="saveRating()">Save rating</button>${rateEdit?' <button class="btn ghost" onclick="rateEdit=false;rateSel=0;show(\'reports\',1)">Cancel</button>':''}</div></div>`
+ :`<div style="margin:6px 0">${stars(lr.stars)} <span class="note">rated by ${esc(lr.user)} on ${dmy(lr.date)} (${lr.status==='plus'?'in profit':'in loss'}, ${sg(lr.gl)}) · saved in the Google Sheet</span> <button class="mini" style="color:var(--ink)" onclick="rateEdit=true;show('reports',1)">Change</button></div>`}
+ ${ratings.length?`<div class="tw" style="margin-top:8px;max-height:150px"><table><tr><th>Date</th><th>By</th><th>Rating</th><th>Status</th><th>Gain/Loss</th><th>Note</th></tr>${hist}</table></div>`:''}</div>`}
 function status(){const L=last(),be=L.inv/L.un,gap=(be-L.r)/L.r*100,ok=L.pl>=0;
  const card=(n,v,p,inv)=>`<div class="kpi"><small>${n}</small><b>${f(v)}</b><div class="${cl(p)}">${sg(p)} (${sg(p/inv*100)}%)</div></div>`;
  const mI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.mAmt,0),dI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.dAmt,0);
