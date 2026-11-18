@@ -1,5 +1,5 @@
 /**
- * Meezan Investment Tracker v3.2.1 – Google Sheet backend (Apps Script, bound to the Sheet).
+ * Meezan Investment Tracker v3.3.0 – Google Sheet backend (Apps Script, bound to the Sheet).
  * Sheet "Rates": A Date, B NAV (you / the app enter these), C:K formulas (script writes them), M:N parameters.
  * Sheet "Plans": investment plans added from the app.
  * Rule: a Friday rate is applied automatically to Saturday and Sunday.
@@ -12,12 +12,16 @@ const SITE = 'https://www.almeezangroup.com/fund-prices/', FUND_NAME = 'Meezan I
 const DEFAULT_HOLIDAYS = [['2026-08-14','Independence Day'],['2026-11-09','Iqbal Day'],['2026-12-25','Quaid-e-Azam Day / Christmas']];
 let HOL = {};   // holiday dates (yyyy-mm-dd) loaded per request from the Events sheet (type = Holiday)
 const PLAN_COLS = ['name','date','mAmt','dAmt','nav','mUnits','dUnits','units','status'];
-const VERSION = '3.2.1';
+const VERSION = '3.3.0';
 const ADMIN_ONLY = { reset: 1, deleteRate: 1 };           // actions only the admin password may run
 // Private figures live ONLY here (server side) and are sent to the app after a successful login.
-const CONFIG = { invest: 100000, charges: 1955, tax: 293.5, unitsTotal: 1155.5629, portfolio: '902300-1', bank: {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-09-30',printed:'2026-10-01',
+const CONFIG = { invest: 100000, charges: 1955, tax: 293.5, unitsTotal: 1155.5629, portfolio: '902300-1', bank: {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-10-30',printed:'2026-11-03',
+ funds:[{n:'Meezan Islamic Fund (MIF)',t:'GROWTH-B',u:1155.5629,nav:153.1358,val:176958,gl:-23042,fy:-20167},{n:'Meezan Islamic Income Fund (MIIF)',t:'GROWTH-B',u:18.9207,nav:53.7525,val:1017,gl:17,fy:17}],
+ tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]}, banks: [{port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-09-30',printed:'2026-10-01',
  funds:[{n:'Meezan Islamic Fund (MIF)',t:'GROWTH-B',u:1155.5629,nav:157.9976,val:182576,gl:-17424,fy:-14549},{n:'Meezan Islamic Income Fund (MIIF)',t:'GROWTH-B',u:18.9207,nav:53.3381,val:1009,gl:9,fy:9}],
- tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]} };
+ tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]}, {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-10-30',printed:'2026-11-03',
+ funds:[{n:'Meezan Islamic Fund (MIF)',t:'GROWTH-B',u:1155.5629,nav:153.1358,val:176958,gl:-23042,fy:-20167},{n:'Meezan Islamic Income Fund (MIIF)',t:'GROWTH-B',u:18.9207,nav:53.7525,val:1017,gl:17,fy:17}],
+ tx:[['2026-07-21','PURCHASE (MIIF)',1000,0,'52.2512','18.9207'],['2026-07-21','LOAD CHARGED (MIIF)',0,10,'0.0000','–'],['2026-07-21','GOVT. TAX (MIIF)',0,1,'0.0000','–']]}] };
 
 /** ---------- Login: simple fixed passwords (change them here any time, then Deploy > New version) ---------- */
 const USER_PW = 'maria123', ADMIN_PW = 'maria123';   // same password = full access for everyone who knows it

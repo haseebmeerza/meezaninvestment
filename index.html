@@ -103,7 +103,7 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.2.1 · Private – authorised users only.</p></div>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.3.0 · Private – authorised users only.</p></div>
  <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
  <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
@@ -114,12 +114,12 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
- <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.2.1</span></footer>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.3.0</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.2.1';let isAdmin=false;
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.3.0';let isAdmin=false;
 let ratings=[],rateSel=0,rateNote='',rateEdit=false;let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -131,7 +131,7 @@ if(document.addEventListener)document.addEventListener('input',e=>{const t=e.tar
 const f=(n,d=2)=>Number(n).toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
 const sg=n=>(n>=0?'+':'')+f(n);const cl=n=>n>=0?'up':'dn';
 let UNITS_TOTAL=0,unitsEach=0,netEach=0;
-function setCfg(c){BASE.invest=c.invest;BASE.charges=c.charges;BASE.tax=c.tax;UNITS_TOTAL=c.unitsTotal;unitsEach=UNITS_TOTAL/2;netEach=BASE.invest-BASE.charges-BASE.tax;BASE.buyNAV=netEach/unitsEach;BANK=c.bank;const fl=$('fundline');if(fl)fl.textContent='Al Meezan Islamic Fund (MIF) · Investment Fund · Portfolio No. '+c.portfolio}
+function setCfg(c){BASE.invest=c.invest;BASE.charges=c.charges;BASE.tax=c.tax;UNITS_TOTAL=c.unitsTotal;unitsEach=UNITS_TOTAL/2;netEach=BASE.invest-BASE.charges-BASE.tax;BASE.buyNAV=netEach/unitsEach;BANK=c.bank;BANKS=c.banks||[c.bank];if(stIdx<0||stIdx>=BANKS.length)stIdx=BANKS.length-1;const fl=$('fundline');if(fl)fl.textContent='Al Meezan Islamic Fund (MIF) · Investment Fund · Portfolio No. '+c.portfolio}
 function toast(m,bad){const t=$('toast');t.textContent=m;t.style.background=bad?'#c8352f':'#0a8f5b';t.style.display='block';setTimeout(()=>t.style.display='none',bad?8000:2600)}
 /* ---------- progress ---------- */
 let _pt=0;
@@ -236,18 +236,21 @@ function donut(parts,o={}){const W=380,H=215,cx=105,cy=108,r=72,ri=46,tot=parts.
  const lg=parts.map((p,i)=>`<rect x="205" y="${74+i*34}" width="10" height="10" rx="2" fill="${p.c}"/><text x="221" y="${83+i*34}" style="font-size:11px;font-weight:700;fill:var(--ink)">${p.n}</text><text x="221" y="${96+i*34}" style="font-size:10px">${f(p.v/tot*100)}% · Rs ${f(p.v,0)}</text>`).join('');
  return `<div class="cc"><div class="ch"><b>${o.t||''}</b><span class="cs">${o.sub||''}</span></div><svg viewBox="0 0 ${W} ${H}" role="img">${s}<text x="${cx}" y="${cy+4}" text-anchor="middle" style="font-size:12px;font-weight:700;fill:var(--ink)">${o.center||''}</text>${lg}</svg></div>`}
 /* ---------- bank statement (Al Meezan, as at 30/09/2026) ---------- */
-let BANK={funds:[],tx:[],asat:'',printed:'',port:'',holder:'',amc:''};
-function statement(){const B=BANK,tv=B.funds.reduce((a,x)=>a+x.val,0),tg=B.funds.reduce((a,x)=>a+x.gl,0),tf=B.funds.reduce((a,x)=>a+x.fy,0),r=rates[B.asat],calc=r?UNITS_TOTAL*r:null,df=calc===null?null:calc-B.funds[0].val;
+let BANK={funds:[],tx:[],asat:'',printed:'',port:'',holder:'',amc:''},BANKS=[],stIdx=-1;
+function statement(){const B=BANKS[stIdx]||BANK,tv=B.funds.reduce((a,x)=>a+x.val,0),tg=B.funds.reduce((a,x)=>a+x.gl,0),tf=B.funds.reduce((a,x)=>a+x.fy,0),r=rates[B.asat],calc=r?UNITS_TOTAL*r:null,df=calc===null?null:calc-B.funds[0].val;
  const bar=B.funds.map((x,i)=>`<div style="width:${x.val/tv*100}%;background:${i?'var(--gold)':'var(--navy)'};color:#fff;padding:4px 6px;font-size:12px;white-space:nowrap;overflow:hidden">${i?'':'Equity '}${f(x.val/tv*100)}%</div>`).join('');
  const ai=[['Joint account holder','N/A'],['Zakat status','Applicable'],['Dividend option','Re-invest'],['Risk profile','Balanced'],['Meezan Funds Online','Registered'],['Hard copy statement','Not dispatched'],['ATM / Internet banking (Meezan Bank)','Not registered']];
- return `<h3>Bank Statement of Account</h3><div class="box" style="border-color:var(--gold)"><b>${B.amc}</b><div class="grid" style="margin-top:10px">${kpi('Portfolio No.',B.port)}${kpi('Account holder',B.holder)}${kpi('Balance as at',dmy(B.asat))}${kpi('Statement printed',dmy(B.printed))}</div><p class="note" style="margin:0">Account is in Maria’s name; the workbook splits the investment 50/50 between Maria and Maeda.</p></div>
+ const P=stIdx>0?BANKS[stIdx-1]:null,pv=P?P.funds.reduce((a,x)=>a+x.val,0):0,cr=(n,a,b,d)=>`<tr><td>${n}</td><td>${a}</td><td>${b}</td><td class="${cl(d)}">${sg(d)}</td></tr>`;
+ const sel=BANKS.length>1?`<div class="noprint" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"><span class="note" style="align-self:center">Statement:</span>${BANKS.map((b,i)=>`<button class="chip${i===stIdx?' on':''}" onclick="stIdx=${i};show('statement',1)">As at ${dmy(b.asat)}</button>`).join('')}</div>`:'';
+ const cmp=P?`<div class="box"><b>Change since previous statement</b> <span class="note">${dmy(P.asat)} → ${dmy(B.asat)}</span><div class="tw" style="margin-top:8px"><table><tr><th>Item</th><th>${dmy(P.asat)}</th><th>${dmy(B.asat)}</th><th>Change</th></tr>${cr('MIF NAV (Rs)',f(P.funds[0].nav,4),f(B.funds[0].nav,4),B.funds[0].nav-P.funds[0].nav)}${cr('MIF value (Rs)',f(P.funds[0].val,0),f(B.funds[0].val,0),B.funds[0].val-P.funds[0].val)}${cr('MIF to-date gain/(loss)',sg(P.funds[0].gl).replace(/\.00$/,''),sg(B.funds[0].gl).replace(/\.00$/,''),B.funds[0].gl-P.funds[0].gl)}${cr('MIIF value (Rs)',f(P.funds[1].val,0),f(B.funds[1].val,0),B.funds[1].val-P.funds[1].val)}${cr('Total portfolio value (Rs)',f(pv,0),f(tv,0),tv-pv)}</table></div></div>`:'';
+ return `<h3>Bank Statement of Account</h3>${sel}<div class="box" style="border-color:var(--gold)"><b>${B.amc}</b><div class="grid" style="margin-top:10px">${kpi('Portfolio No.',B.port)}${kpi('Account holder',B.holder)}${kpi('Balance as at',dmy(B.asat))}${kpi('Statement printed',dmy(B.printed))}</div><p class="note" style="margin:0">Account is in Maria’s name; the workbook splits the investment 50/50 between Maria and Maeda.</p></div>
  <div class="box"><b>Balance summary</b><div class="tw" style="margin-top:8px"><table><tr><th>Fund</th><th>Units type</th><th>Units</th><th>NAV (Rs)</th><th>Value (Rs)</th><th>Gain/(Loss) Rs</th><th>FYTD Rs</th></tr>${B.funds.map(x=>`<tr><td>${x.n}</td><td>${x.t}</td><td>${f(x.u,4)}</td><td>${f(x.nav,4)}</td><td>${f(x.val,0)}</td><td class="${cl(x.gl)}">${sg(x.gl).replace(/\.00$/,'')}</td><td class="${cl(x.fy)}">${sg(x.fy).replace(/\.00$/,'')}</td></tr>`).join('')}<tr style="font-weight:700"><td>Total values</td><td></td><td></td><td></td><td>${f(tv,0)}</td><td class="${cl(tg)}">${sg(tg).replace(/\.00$/,'')}</td><td class="${cl(tf)}">${sg(tf).replace(/\.00$/,'')}</td></tr></table></div>
  <p style="margin:12px 0 4px"><b>Allocation</b> <span class="note">Equity ${f(B.funds[0].val/tv*100)}% · Income ${f(B.funds[1].val/tv*100)}%</span></p><div style="display:flex;border:1.5px solid var(--brd);border-radius:6px;overflow:hidden">${bar}</div></div>
  <div class="box"><b>Reconciliation – bank vs app (${dmy(B.asat)})</b><div class="grid" style="margin-top:10px">${kpi('Bank value – MIF','Rs '+f(B.funds[0].val,0))}${kpi('App value (units × NAV)',calc===null?'no rate for date':'Rs '+f(calc))}${kpi('Difference',df===null?'–':sg(df),df!==null&&Math.abs(df)<1?'up':'dn')}${kpi('Status',df===null?'–':Math.abs(df)<1?'✔ Reconciled':'Check rates',df!==null&&Math.abs(df)<1?'up':'dn')}</div><p class="note" style="margin:0">Units (${f(UNITS_TOTAL,4)}) are taken from the bank statement, so partner values match the bank. Gain/Loss ${sg(B.funds[0].gl)} = value ${f(B.funds[0].val,0)} − invested ${f(2*BASE.invest,0)}.</p></div>
- <div class="box"><b>Summary of purchases &amp; withdrawals</b> <span class="note">01/07/2026 to 30/09/2026</span><div class="grid" style="margin-top:10px">${kpi('Total purchases','Rs '+f(B.tx.reduce((a,t)=>a+t[2],0),0))}${kpi('Total withdrawals','Rs 0')}</div>
+ <div class="box"><b>Summary of purchases &amp; withdrawals</b> <span class="note">01/07/2026 to ${dmy(B.asat)}</span><div class="grid" style="margin-top:10px">${kpi('Total purchases','Rs '+f(B.tx.reduce((a,t)=>a+t[2],0),0))}${kpi('Total withdrawals','Rs 0')}</div>
  <div class="tw"><table><tr><th>Date</th><th>Transaction</th><th>Inflow (Rs)</th><th>Outflow (Rs)</th><th>NAV (Rs)</th><th>Units</th></tr>${B.tx.map(t=>`<tr><td>${dmy(t[0])}</td><td style="text-align:left">${t[1]}</td><td>${f(t[2],0)}</td><td>${f(t[3],0)}</td><td>${t[4]}</td><td>${t[5]}</td></tr>`).join('')}</table></div><p class="note">MIF unit balance ${f(B.funds[0].u,4)} (no transactions in the period). MIIF opening 0.0000 → closing ${f(B.funds[1].u,4)} units.</p></div>
  <div class="box"><b>Account information</b><div class="tw" style="margin-top:8px"><table>${ai.map(x=>`<tr><td>${x[0]}</td><td style="text-align:left">${x[1]}</td></tr>`).join('')}</table></div></div>
- <p class="note">MIIF (Rs ${f(B.funds[1].val,0)}) is held in the same portfolio but is not part of the Maria/Maeda MIF reports above. Statement is system generated by Al Meezan; keep the original for your records.</p>`}
+ ${cmp}<p class="note">MIIF (Rs ${f(B.funds[1].val,0)}) is held in the same portfolio but is not part of the Maria/Maeda MIF reports above. Statement is system generated by Al Meezan; keep the original for your records.</p>`}
 /* ---------- views ---------- */
 function reports(){if(detail)return reportDetail();const s=series(),L=s[s.length-1],best=s.slice(1).reduce((a,b)=>b.chg>a.chg?b:a,s[1]),worst=s.slice(1).reduce((a,b)=>b.chg<a.chg?b:a,s[1]);
  const hi=s.reduce((a,b)=>b.r>a.r?b:a);
