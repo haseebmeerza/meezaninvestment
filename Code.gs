@@ -1,5 +1,5 @@
 /**
- * Meezan Investment Tracker v3.3.0 – Google Sheet backend (Apps Script, bound to the Sheet).
+ * Meezan Investment Tracker v3.3.1 – Google Sheet backend (Apps Script, bound to the Sheet).
  * Sheet "Rates": A Date, B NAV (you / the app enter these), C:K formulas (script writes them), M:N parameters.
  * Sheet "Plans": investment plans added from the app.
  * Rule: a Friday rate is applied automatically to Saturday and Sunday.
@@ -12,7 +12,7 @@ const SITE = 'https://www.almeezangroup.com/fund-prices/', FUND_NAME = 'Meezan I
 const DEFAULT_HOLIDAYS = [['2026-08-14','Independence Day'],['2026-11-09','Iqbal Day'],['2026-12-25','Quaid-e-Azam Day / Christmas']];
 let HOL = {};   // holiday dates (yyyy-mm-dd) loaded per request from the Events sheet (type = Holiday)
 const PLAN_COLS = ['name','date','mAmt','dAmt','nav','mUnits','dUnits','units','status'];
-const VERSION = '3.3.0';
+const VERSION = '3.3.1';
 const ADMIN_ONLY = { reset: 1, deleteRate: 1 };           // actions only the admin password may run
 // Private figures live ONLY here (server side) and are sent to the app after a successful login.
 const CONFIG = { invest: 100000, charges: 1955, tax: 293.5, unitsTotal: 1155.5629, portfolio: '902300-1', bank: {port:'9023••-1',holder:'MARIA HASEEB MIRZA',amc:'AL MEEZAN INVESTMENT MANAGEMENT LTD',asat:'2026-10-30',printed:'2026-11-03',
@@ -46,9 +46,7 @@ function setup() {
   fixParams();
   const r = readRates(); fillWk(r); writeRates(r);
   const s = sh(RATES);
-  s.getRange('N8').setFormula('=LOOKUP(2,1/(B2:B1000<>""),B2:B1000)');
-  s.getRange('N9').setFormula('=LOOKUP(2,1/(B2:B1000<>""),H2:H1000)');
-  s.getRange('N10').setFormula('=LOOKUP(2,1/(B2:B1000<>""),J2:J1000)');
+  latestFormulas();
 }
 
 /** Run from the editor to load all rates (17 Jun – 2 Nov 2026) into the sheet. Keeps plans and any other rates you added. */
@@ -64,11 +62,15 @@ function importRates() {
   SEED.forEach(function (v, i) { r[addDays(START, i)] = v; });
   fillWk(r); writeRates(r);
   const s = sh(RATES);
-  s.getRange('N8').setFormula('=LOOKUP(2,1/(B2:B1000<>""),B2:B1000)');
-  s.getRange('N9').setFormula('=LOOKUP(2,1/(B2:B1000<>""),H2:H1000)');
-  s.getRange('N10').setFormula('=LOOKUP(2,1/(B2:B1000<>""),J2:J1000)');
+  latestFormulas();
 }
 
+/** Latest NAV / value / gain-loss cells (N8:N10). ARRAYFORMULA is required in Google Sheets, otherwise the cells show #N/A. */
+function latestFormulas() {
+  const s = sh(RATES);
+  s.getRange('M8').setValue('Latest NAV'); s.getRange('M9').setValue('Latest Total Value'); s.getRange('M10').setValue('Latest Gain/Loss');
+  [['N8','B'],['N9','H'],['N10','J']].forEach(function (c) { s.getRange(c[0]).setFormula('=IFERROR(ARRAYFORMULA(LOOKUP(2,1/(B2:B1000<>""),' + c[1] + '2:' + c[1] + '1000)),"")'); });
+}
 function sh(name) {
   const ss = SpreadsheetApp.getActive();
   let s = ss.getSheetByName(name);
@@ -191,6 +193,7 @@ function writeRates(o) {
   s.getRange(2, 3, n, 9).setFormulas(f);
   s.getRange(2, 12, n, 1).setFormulas(ds.map(function (d, i) { return ['=TEXT(A' + (i + 2) + ',"ddd")']; }));
   s.getRange(2, 3, n, 1).setNumberFormat('0.00%'); s.getRange(2, 11, n, 1).setNumberFormat('0.00%');
+  latestFormulas();
 }
 function readPlans() {
   const s = sh(PLANS), n = s.getLastRow();

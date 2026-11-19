@@ -103,7 +103,7 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.3.0 · Private – authorised users only.</p></div>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.3.1 · Private – authorised users only.</p></div>
  <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
  <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
@@ -114,12 +114,12 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
- <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.3.0</span></footer>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.3.1</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.3.0';let isAdmin=false;
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.3.1';let isAdmin=false;
 let ratings=[],rateSel=0,rateNote='',rateEdit=false;let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
