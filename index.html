@@ -97,13 +97,21 @@ svg text{fill:var(--mut);font-size:11px}
 .tag{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;background:rgba(29,111,209,.14);border:1px solid var(--brd);margin-right:4px;font-weight:700}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]) .rc h4{color:var(--gold)}}
 @media print{.banner,.menu,#foot,.fab,.noprint,#toast,#prog{display:none!important}#app{height:auto!important;overflow:visible!important}.layout{display:block!important;overflow:visible!important}.main{overflow:visible!important;height:auto!important;border:0}.tw{max-height:none!important;overflow:visible!important}body{background:#fff}}
+
+.hbg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:14px 0}
+.hb{display:flex;flex-direction:column;gap:3px;text-align:left;border:2px solid var(--brd);background:var(--bg);color:var(--ink);border-radius:14px;padding:14px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.08);transition:transform .15s,border-color .15s}
+.hb:hover{transform:translateY(-3px);border-color:var(--gold)}.hb .hi2{font-size:26px}.hb b{font-size:16px}.hb small{color:var(--mut)}
+.hb.big{background:linear-gradient(135deg,#0f2a52,#1d4a86);color:#fff;border-color:var(--gold);grid-column:span 1;min-height:110px}.hb.big small{color:#dbeafe}.hb.big b{font-size:19px}
+.nl .ni{padding:8px 4px;border-bottom:1px solid var(--brd);font-size:14px}.nl{margin-bottom:10px}
+.grp td{background:rgba(29,111,209,.16)!important;font-weight:700;text-align:left!important}
+.fpt{max-height:calc(100vh - 360px)}.fpt th.r,.fpt td.r{text-align:right;font-variant-numeric:tabular-nums}
 </style></head><body>
 
 <section id="home"><div class="login">
  <div class="info"><div class="logo">MIF</div><h2>Meezan Investment Tracker</h2>
  <p style="margin:0 0 8px;font-size:14px">Joint investment monitor for the Al Meezan Islamic Fund (MIF).</p>
  <ul style="padding-left:18px;margin:0"><li>Daily bank NAV rates entry</li><li>Reports, status, forecast, trend &amp; graphs</li><li>Both partners’ gain / loss at a glance</li><li>Add future investment plans</li><li>Update, Refresh &amp; Reset controls</li></ul>
- <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.3.1 · Private – authorised users only.</p></div>
+ <p class="note" style="color:#cfd9ea;margin-top:14px">Version 3.4.0 · Private – authorised users only.</p></div>
  <div><h3 style="margin:0 0 4px">Login</h3><p class="note" style="margin-top:0">Private – authorised users only.</p>
  <label>Password</label><input id="upw" type="password" placeholder="Enter password" autocomplete="current-password" style="margin:6px 0 12px" onkeydown="if(event.key==='Enter')login()">
  <button class="btn gold" style="width:100%" onclick="login()">Enter</button>
@@ -114,12 +122,12 @@ svg text{fill:var(--mut);font-size:11px}
  <div class="tools"><span id="hi" class="note" style="color:#cfd9ea;align-self:center"></span><span id="sync" class="note" style="align-self:center;font-weight:700"></span>
  <button class="btn gold" onclick="doUpdate()">⬆ Update</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doRefresh()">⟳ Refresh</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="doReset()">⟲ Reset</button><button class="btn ghost" style="color:#fff;border-color:#8aa" onclick="logout()">Logout</button></div></div>
  <div class="layout"><nav class="menu" id="menu"></nav><main class="main" id="out"></main></div>
- <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.3.1</span></footer>
+ <footer id="foot"><span>Meezan Investment Tracker · Private – authorised users only</span><span>Version 3.4.0</span></footer>
  <button class="btn gold fab" onclick="show('rates')">＋ Add Rate</button>
 </section><div id="prog"><div id="ptxt"></div><div id="pbarw"><div id="pbar"></div></div></div><div id="toast"></div>
 
 <script>
-let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.3.1';let isAdmin=false;
+let BASE={invest:0,charges:0,tax:0,buyNAV:1,names:['Maria','Maeda']};const VERSION='3.4.0';let isAdmin=false;
 let ratings=[],rateSel=0,rateNote='',rateEdit=false;let lastSync=null,rates={},plans=[],events=[],view='reports',detail=false,user='';
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -164,7 +172,7 @@ async function runSync(silent){const P=silent?null:pStart('Checking Al Meezan we
 async function syncNow(){await runSync(false);show('rates')}
 async function persist(body){const P=pStart('Saving to Google Sheet… recalculating');
  try{applyState(await api(body));setSync('cloud');P.done(true,'Saved to Google Sheet');return true}catch(e){P.done(false,'Not saved');setSync('err',e.message);if(user)toast('Not saved – '+e.message,1);return false}}
-setInterval(()=>{if(user&&view!=='rates'&&view!=='plans')load(1).then(ok=>{if(ok)show(view,1)})},60000);
+setInterval(()=>{if(user&&view!=='rates'&&view!=='plans'&&!['fundprices','howto','options','news'].includes(view))load(1).then(ok=>{if(ok)show(view,1)})},60000);
 /* ---------- model ---------- */
 function series(){const ds=Object.keys(rates).sort();return ds.map((d,i)=>{const r=+rates[d];
  let un=2*unitsEach;plans.filter(p=>p.status==='Executed'&&p.date<=d).forEach(p=>un+=p.units);
@@ -185,14 +193,14 @@ async function login(){const pw=$('upw').value;if(!pw){toast('Enter the password
  catch(e){P.done(false,'Login failed');toast(e.message,1)}}
 function enter(role){isAdmin=role==='admin';user=isAdmin?'Admin':'Maria';
  $('home').style.display='none';$('app').style.display='flex';$('hi').textContent='Signed in: '+user+' · v'+VERSION;
- const rb=document.querySelector('[onclick="doReset()"]');if(rb)rb.style.display=isAdmin?'':'none';buildMenu();show('reports')}
+ const rb=document.querySelector('[onclick="doReset()"]');if(rb)rb.style.display=isAdmin?'':'none';buildMenu();show('home')}
 function forceLogout(){try{sessionStorage.removeItem('mift');sessionStorage.removeItem('mifr')}catch(e){}
- user='';isAdmin=false;rates={};plans=[];events=[];ratings=[];$('out').innerHTML='';$('app').style.display='none';$('home').style.display='flex'}
+ user='';isAdmin=false;rates={};plans=[];events=[];ratings=[];MK=null;$('out').innerHTML='';$('app').style.display='none';$('home').style.display='flex'}
 function logout(){forceLogout()}
-const MENU=[['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['statement','🧾 Bank Statement'],['rates','🏦 Daily Rates']];
+const MENU=[['home','🏠 Home'],['news','📰 News'],['fundprices','💹 Fund Prices'],['options','🧩 Investment Options'],['howto','🧭 How to Invest'],['reports','📊 Reports'],['status','🧭 Status'],['forecast','🔮 Forecasting'],['trend','📈 Trend'],['graphs','🖼 Graphs'],['plans','🗂 Investment Plans'],['statement','🧾 Bank Statement'],['rates','🏦 Daily Rates']];
 function buildMenu(){$('menu').innerHTML=MENU.map(m=>`<button data-v="${m[0]}" onclick="show('${m[0]}')">${m[1]}</button>`).join('')}
 function show(v,keep){CH={};view=v;document.querySelectorAll('#menu button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
- $('out').innerHTML=({reports,status,forecast,trend,graphs,plans:plansV,rates:ratesV,statement})[v]();if(!keep&&$('out').scrollTo)$('out').scrollTo({top:0,behavior:'smooth'})}
+ $('out').innerHTML=({home,news,fundprices,options,howto,reports,status,forecast,trend,graphs,plans:plansV,rates:ratesV,statement})[v]();if(!keep&&$('out').scrollTo)$('out').scrollTo({top:0,behavior:'smooth'})}
 const kpi=(l,v,c='')=>`<div class="kpi"><small>${l}</small><b class="${c}">${v}</b></div>`;
 /* ---------- charts ---------- */
 const fitW=()=>Math.max(480,($('out').clientWidth||900)-36),fitH=()=>Math.max(280,Math.min(560,window.innerHeight-400)),fitO=()=>({fit:1,w:fitW(),h:fitH(),ticks:Math.max(8,Math.floor(fitW()/42))});
@@ -271,6 +279,54 @@ function ratingBox(L){const st=L.pl>=0?'plus':'minus',lr=ratings[ratings.length-
  ${due?`<p class="note" style="margin:8px 0 4px">${lr&&!rateEdit?'The result moved from '+(lr.status==='plus'?'profit to loss':'loss to profit')+' – ':''}How do you rate this performance? You are asked again only when the result moves between profit and loss.</p><div>${stars(rateSel,1)}</div><div class="row" style="margin-top:8px"><div><input id="rnote" placeholder="Note (optional)" maxlength="200" value="${esc(rateNote)}" oninput="rateNote=this.value"></div><div><button class="btn gold" onclick="saveRating()">Save rating</button>${rateEdit?' <button class="btn ghost" onclick="rateEdit=false;rateSel=0;show(\'reports\',1)">Cancel</button>':''}</div></div>`
  :`<div style="margin:6px 0">${stars(lr.stars)} <span class="note">rated by ${esc(lr.user)} on ${dmy(lr.date)} (${lr.status==='plus'?'in profit':'in loss'}, ${sg(lr.gl)}) · saved in the Google Sheet</span> <button class="mini" style="color:var(--ink)" onclick="rateEdit=true;show('reports',1)">Change</button></div>`}
  ${ratings.length?`<div class="tw" style="margin-top:8px;max-height:150px"><table><tr><th>Date</th><th>By</th><th>Rating</th><th>Status</th><th>Gain/Loss</th><th>Note</th></tr>${hist}</table></div>`:''}</div>`}
+/* ---------- Home, News, Fund Prices, Options, How to invest ---------- */
+let MK=null,mkBusy=false,mkErr='',nf='All',rcat='All',rq='',oSec='All',pProf='Balanced',pAmt=500000;
+async function loadMarket(force){if(mkBusy)return;mkBusy=true;mkErr='';const P=force?pStart('Checking Al Meezan website…'):null;
+ try{const j=await api({action:'market',force:!!force});MK=j.market;P&&P.done(true,MK.ratesLive?'Live data loaded':'Latest saved data shown')}catch(e){mkErr=e.message;P&&P.done(false,'Not loaded')}
+ mkBusy=false;if(user&&['home','news','fundprices','options','howto'].includes(view))show(view,1)}
+const mkGate=fn=>MK?fn():(mkErr?`<h3>Market data</h3><div class="box"><b class="dn">Could not load: ${esc(mkErr)}</b><p><button class="btn gold" onclick="mkErr='';loadMarket()">Retry</button></p></div>`:(loadMarket(),`<h3>Loading…</h3><p class="note">Fetching news, fund prices and investment options.</p>`));
+const ntag=t=>/launch/i.test(t)?['Launch','tg-r']:/maturity/i.test(t)?['Maturity','tg-h']:/payout|dividend|distribution/i.test(t)?['Payout','tg-r']:/branch|relocation|closure/i.test(t)?['Branch','tg-n']:/amendment|change in|notice/i.test(t)?['Notice','tg-w']:['News','tg-n'];
+const srcLinks=()=>`<div class="box"><b>Sources</b><ul style="margin:6px 0 0;padding-left:18px">${MK.src.map(x=>`<li class="note"><a href="${x[1]}" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">${esc(x[0])}</a></li>`).join('')}</ul></div>`;
+const disc=()=>`<p class="note">Information snapshot gathered ${dmy(MK.asof)} from the sources listed; rates change often and Islamic bank profit is declared after each month. Verify with the provider before investing. This is general information, not personal financial advice.</p>`;
+function home(){return mkGate(()=>{const L=last(),mif=MK.rates.find(r=>r[1]==='Meezan Islamic Fund'),nw=[...MK.news].sort((a,b)=>a.d<b.d?1:-1).slice(0,5),tl=(ic,t,v,sub)=>`<button class="hb" onclick="show('${v}')"><span class="hi2">${ic}</span><b>${t}</b><small>${sub}</small></button>`;
+ return `<div class="dhead"><div><h3 style="margin:0">Welcome – Maria &amp; Maeda</h3><small>Meezan Investment Tracker · ${dmy(L.d)} · all figures private to your login</small></div><div class="note" style="color:#dbeafe">Market data ${MK.ratesLive?'live from almeezangroup.com':'saved snapshot'} · ${dmy(MK.ratesAsOf)}</div></div>
+ <div class="grid" style="margin-top:14px">${kpi('Latest NAV (MIF)',f(L.r,4),dmy(L.d))}${kpi('Current value','Rs '+f(L.tv),'invested Rs '+f(L.inv,0))}${kpi('Total gain / loss','Rs '+sg(L.pl),sg(L.gr)+'%',cl(L.pl))}${kpi('SBP policy rate',f(MK.policy.rate)+'%','from '+dmy(MK.policy.from))}${kpi('MIF repurchase rate',mif?f(mif[3],4):'–',mif?'validity '+mif[2]:'')}</div>
+ <div class="hbg"><button class="hb big" onclick="show('news')"><span class="hi2">📰</span><b>News</b><small>Al Meezan announcements &amp; market news</small></button><button class="hb big" onclick="detail=false;show('reports')"><span class="hi2">📊</span><b>Reports</b><small>Summary, detailed report, forecast</small></button>
+ ${tl('💹','Fund Prices','fundprices','Today’s rate report – all fund types')}${tl('🧩','Investment Options','options','National Savings, banks, other fund managers')}${tl('🧭','How to Invest','howto','Steps, plans &amp; plan builder')}${tl('🧾','Bank Statement','statement','Statements &amp; reconciliation')}${tl('🏦','Daily Rates','rates','Add &amp; audit daily NAV')}${tl('🔮','Forecasting','forecast','30-day outlook')}</div>
+ <div class="dh">Latest news <small>${MK.newsLive?'live':'snapshot'} · almeezangroup.com</small></div><div class="nl">${nw.map(n=>{const t=ntag(n.t);return `<div class="ni"><span class="tg ${t[1]}">${t[0]}</span> <b>${dmy(n.d)}</b> – ${esc(n.t)}</div>`}).join('')}<button class="chip" onclick="show('news')">All news →</button></div>
+ <div class="dh">Market highlights</div><div class="rcg">${MK.macro.slice(0,3).map(m=>`<div class="rc"><h4>${esc(m.t)}</h4><div class="note">${dmy(m.d)}</div><p style="margin:6px 0 0;font-size:13.5px">${esc(m.x)}</p></div>`).join('')}</div>${disc()}`})}
+function news(){return mkGate(()=>{const all=[...MK.news].sort((a,b)=>a.d<b.d?1:-1),ty=['All','Launch','Maturity','Payout','Notice','Branch','News'],sh=all.filter(n=>nf==='All'||ntag(n.t)[0]===nf);
+ return `<h3>News &amp; Announcements</h3><div class="note" style="margin-bottom:8px">${MK.newsLive?'Live from':'Saved copy of'} <a href="https://www.almeezangroup.com/news-announcement/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">almeezangroup.com/news-announcement</a> · <button class="mini" style="color:var(--ink)" onclick="loadMarket(true)">⟳ Check website now</button></div>
+ <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${ty.map(t=>`<button class="chip${nf===t?' on':''}" onclick="nf='${t}';show('news',1)">${t}</button>`).join('')}</div>
+ <div class="dh">Al Meezan news</div><div class="nl">${sh.length?sh.map(n=>{const t=ntag(n.t);return `<div class="ni"><span class="tg ${t[1]}">${t[0]}</span> <b>${dmy(n.d)}</b> – ${esc(n.t)}</div>`}).join(''):'<div class="note">Nothing in this category.</div>'}</div>
+ <div class="dh">Market &amp; investment news <small>all investment types</small></div><div class="rcg">${[...MK.macro].sort((a,b)=>a.d<b.d?1:-1).map(m=>`<div class="rc"><h4>${esc(m.t)}</h4><div class="note">${dmy(m.d)} · ${esc(m.s)}</div><p style="margin:6px 0 0;font-size:13.5px">${esc(m.x)}</p></div>`).join('')}</div><div class="dh">Latest rate report</div><div class="box"><b>Fund prices</b> – ${MK.rates.length} funds and plans, validity ${dmy(MK.ratesAsOf)}. <button class="btn gold" style="padding:5px 12px" onclick="show('fundprices')">Open rate report</button></div>${srcLinks()}${disc()}`})}
+const fpPc=x=>`<span class="${x>=0?'up':'dn'}">${sg(x)}</span>`,fpN=(x,d)=>x?f(x,d):'–';
+function fpRows(){const q=rq.toLowerCase(),R=MK.rates.filter(r=>(rcat==='All'||r[0]===rcat)&&(!q||r[1].toLowerCase().includes(q)));let g='';
+ return R.map(r=>{const h=r[0]!==g?(g=r[0],`<tr class="grp"><td colspan="11">${esc(r[0])}</td></tr>`):'',mine=/^Meezan Islamic Fund$|Islamic Income Fund Type B/.test(r[1]);
+  return h+`<tr${mine?' style="background:rgba(201,162,39,.18)"':''}><td style="text-align:left;white-space:normal;min-width:220px">${esc(r[1])}${mine?' <span class="tag">yours</span>':''}</td><td>${r[2]}</td><td class="r">${fpN(r[3],4)}</td><td class="r">${fpN(r[4],4)}</td><td class="r">${fpN(r[5],4)}</td><td class="r">${fpPc(r[6])}</td><td class="r">${fpPc(r[7])}</td><td class="r">${fpPc(r[8])}</td><td class="r">${r[9]?fpPc(r[9]):'–'}</td><td class="r">${r[10]?fpPc(r[10]):'–'}</td><td class="r">${f(r[11])}</td></tr>`}).join('')||'<tr><td colspan="11" style="text-align:center">No fund matches</td></tr>'}
+function fundprices(){return mkGate(()=>{const cats=['All',...new Set(MK.rates.map(r=>r[0]))];
+ return `<h3>Fund Prices – current rate report</h3><div class="note" style="margin-bottom:8px">${MK.ratesLive?'Live from':'Saved copy of'} <a href="https://www.almeezangroup.com/fund-prices/" target="_blank" rel="noopener noreferrer" style="color:var(--ink)">almeezangroup.com/fund-prices</a> · validity ${dmy(MK.ratesAsOf)} · <button class="mini" style="color:var(--ink)" onclick="loadMarket(true)">⟳ Refresh from website</button></div>
+ <div class="row" style="margin-bottom:8px"><div><input placeholder="Search fund…" value="${esc(rq)}" oninput="rq=this.value;$('fpb').innerHTML=fpRows()"></div></div>
+ <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${cats.map(c=>`<button class="chip${rcat===c?' on':''}" onclick="rcat=this.dataset.c;show('fundprices',1)" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>
+ <div class="tw fpt"><table><tr><th>Fund</th><th>Validity</th><th class="r">Repurchase (Rs)</th><th class="r">Offer (Rs)</th><th class="r">NAV (Rs)</th><th class="r">MTD %</th><th class="r">FYTD %</th><th class="r">CYTD %</th><th class="r">FY25 %</th><th class="r">FY24 %</th><th class="r">Since inception %</th></tr><tbody id="fpb">${fpRows()}</tbody></table></div>
+ <p class="note">Open-end funds publish the price in the Repurchase column; money-market, income and pension funds that show “–” there publish a single NAV. Returns are as reported by Al Meezan (funds under 1 year old show partial figures). Highlighted rows are the funds in your portfolio.</p>${disc()}`})}
+function otbl(h,rows){return `<div class="tw" style="max-height:none"><table><tr>${h.map(x=>`<th style="text-align:left">${x}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td style="text-align:left;white-space:normal">${c}</td>`).join('')}</tr>`).join('')}</table></div>`}
+const yn=v=>v==='Yes'?'<span class="tg tg-r">Islamic</span>':'<span class="tg tg-m">Conventional</span>';
+function options(){return mkGate(()=>{const secs=['All','Al Meezan funds','Government','Banks','Other fund managers','Bank list'],on=x=>oSec==='All'||oSec===x,mc=MK.rates.filter(r=>r[0]!=='Fixed Term Fund (Open End CIS)'&&r[0]!=='Pension Scheme');
+ const cat={};MK.rates.forEach(r=>{(cat[r[0]]=cat[r[0]]||[]).push(r)});
+ return `<h3>Investment Options</h3><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${secs.map(c=>`<button class="chip${oSec===c?' on':''}" onclick="oSec='${c}';show('options',1)">${c}</button>`).join('')}</div>
+ ${on('Al Meezan funds')?`<div class="dh">Al Meezan – every investment type <small>validity ${dmy(MK.ratesAsOf)}</small></div>${otbl(['Type','Funds','Best FYTD %','Typical risk'],Object.keys(cat).map(k=>{const a=cat[k],b=a.reduce((p,x)=>x[7]>p[7]?x:p);const rk=/Money|Income|Fixed/.test(k)?'Low':/Balanced|Asset|Fund of Funds|Pension/.test(k)?'Medium':'High';return [esc(k),a.length+' funds/plans',`${fpPc(b[7])} <span class="note">${esc(b[1])}</span>`,rk]}))}<p class="note">Open <a href="#" onclick="show('fundprices');return false" style="color:var(--ink)">Fund Prices</a> for every fund’s rate and returns.</p>`:''}
+ ${on('Government')?`<div class="dh">National Savings schemes <small>revised 18/11/2026</small></div>${otbl(['Scheme','Profit rate p.a.','Payout','Term / eligibility','Type'],MK.ns.map(r=>[esc(r[0]),`<b>${esc(r[1])}</b>`,esc(r[2]),esc(r[3]),yn(r[4])]))}<p class="note">SBP policy rate: ${f(MK.policy.rate)}% (from ${dmy(MK.policy.from)}). Only the Sarwa schemes are Shariah-compliant; the rest are interest-based.</p>`:''}
+ ${on('Banks')?`<div class="dh">Bank savings &amp; term deposits</div>${otbl(['Bank','Product','Rate p.a.','Basis','As of','Type'],MK.banks.map(r=>[esc(r[0]),esc(r[1]),`<b>${esc(r[2])}</b>`,esc(r[3]),esc(r[4]),yn(r[5])]))}<p class="note">Islamic banks declare profit after each month; the figure shown is the latest declared, not a promise.</p>`:''}
+ ${on('Other fund managers')?`<div class="dh">Islamic funds from other asset managers</div>${otbl(['Fund','Rating','Category','Return','As of'],MK.amcs.map(r=>r.map(esc)))}<p class="note">Money-market returns are annualised (MUFAP, Nov 2026); FY26 figures are 1-year returns to 30 Jun 2026. Equity funds can lose money; past returns do not guarantee future results.</p>`:''}
+ ${on('Bank list')?`<div class="dh">Bank &amp; institution list</div>${otbl(['Institution','Type','Note'],MK.banklist.map(r=>r.map(esc)))}`:''}
+ ${srcLinks()}${disc()}`})}
+function planOut(){const m=MK.mix[pProf],t=pAmt||0;return otbl(['Bucket','Share','Amount (Rs)','Examples'],MK.buckets.map((b,i)=>[b[0],m[i]+'%',f(t*m[i]/100,0),esc(b[1])]))}
+function howto(){return mkGate(()=>{const eq=BANK.funds.length?BANK.funds[0].val/BANK.funds.reduce((a,x)=>a+x.val,0)*100:0;
+ return `<h3>How to Invest</h3><div class="dh">Step by step</div><div class="rcg">${MK.steps.map(x=>`<div class="rc"><h4>${esc(x[0])}</h4><p style="margin:0;font-size:13.5px">${esc(x[1])}</p></div>`).join('')}</div>
+ <div class="dh">Investment plans <small>by goal</small></div>${otbl(['Plan','Goal','Risk','Ideas to look at'],MK.plans.map(p=>[`<b>${esc(p.n)}</b>`,esc(p.g),esc(p.r),esc(p.i)]))}
+ <div class="dh">Plan builder <small>illustrative split</small></div><div class="box"><div class="row"><div><label>Risk profile</label><select onchange="pProf=this.value;$('pout').innerHTML=planOut()">${Object.keys(MK.mix).map(k=>`<option${k===pProf?' selected':''}>${k}</option>`).join('')}</select></div><div><label>Amount to invest (Rs)</label><input type="number" min="0" value="${pAmt}" oninput="pAmt=+this.value||0;$('pout').innerHTML=planOut()"></div></div><div id="pout" style="margin-top:10px">${planOut()}</div>
+ <p class="note" style="margin-bottom:0">Your current bank-statement mix (${dmy(BANK.asat)}): ${f(eq)}% equity (MIF) · ${f(100-eq)}% income (MIIF). The builder is a generic example, not advice – match it to your own goal, horizon and risk tolerance.</p></div>${srcLinks()}${disc()}`})}
 function status(){const L=last(),be=L.inv/L.un,gap=(be-L.r)/L.r*100,ok=L.pl>=0;
  const card=(n,v,p,inv)=>`<div class="kpi"><small>${n}</small><b>${f(v)}</b><div class="${cl(p)}">${sg(p)} (${sg(p/inv*100)}%)</div></div>`;
  const mI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.mAmt,0),dI=BASE.invest+plans.filter(p=>p.status==='Executed').reduce((a,p)=>a+p.dAmt,0);
